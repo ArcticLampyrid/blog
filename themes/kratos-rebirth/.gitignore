@@ -1,9 +1,6 @@
 # NodeJS
 node_modules/
 
-# 站点图像
-source/images/
-
 # 锁文件
 package-lock.json
 yarn.lock
