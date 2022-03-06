@@ -55,7 +55,7 @@ posts:
   show_cc: true
   donate: false
   share: true
-  comments:
+  comments: disqusjs
 
 # Disqus [Disqus](https://disqus.com) 评论相关
 disqus:
@@ -63,12 +63,12 @@ disqus:
 
 # DisqusJS [DisqusJS](https://disqusjs.skk.moe/) 评论相关
 disqusjs:
-  shortname: 
-  sitename: 
-  api: 
-  apikey: 
-  admin: 
-  adminlabel: 
+  shortname: alampy
+  sitename: ArcticLampyrid
+  api: https://disqus.skk.moe/disqus/
+  apikey: Qzq8gvf6VGEIzQHYRZjmVi8caW7kIVu4gHq7jLCk8cJ6jZaU08Mj5WNDhLgUrP9X
+  admin: arcticlampyrid
+  adminlabel: 博主
 
 # Valine [Valine](https://valine.js.org) 评论相关
 valine:
