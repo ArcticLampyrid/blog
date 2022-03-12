@@ -65,7 +65,7 @@ disqus:
 disqusjs:
   shortname: alampy
   sitename: ArcticLampyrid
-  api: https://disqus.skk.moe/disqus/
+  api: https://disqusapi.alampy.workers.dev/
   apikey: Qzq8gvf6VGEIzQHYRZjmVi8caW7kIVu4gHq7jLCk8cJ6jZaU08Mj5WNDhLgUrP9X
   admin: arcticlampyrid
   adminlabel: 博主
