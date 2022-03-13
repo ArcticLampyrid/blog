@@ -26,11 +26,13 @@ menu:
   index: /
   archives: /archives/
   friends: /friends/
+  about: /about/
 
 label:
   index: <i class="fa fa-home"></i>首页
   archives: <i class="fa fa-file"></i>档案馆
   friends: <i class="fa fa-paw"></i>友人帐
+  about: <i class="fa fa-paper-plane"></i>溯源
 
 # Footer 页脚配置
 group_link: 
@@ -173,12 +175,6 @@ site_verify:
 
 # Friends 友链相关内容
 friends:
-  href: "friends"
-  page:
-    title: "友人帐"
-    comments: true
-    description: "友人帐"
-    updated: "2021-01-18"
   list: []
   # - name: "猫猫①号"
   #   bio: "喵~"
