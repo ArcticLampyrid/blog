@@ -1,6 +1,7 @@
 ---
 title: Intel Optane Error 0xA005004E
 date: 2019-05-26 10:24:20
+updated: 2019-05-26 10:24:20
 category: 技术
 ---
 当我多次试图启用Optane加速时（包括使用RST程序和Optane专用程序），反复得到错误0xA005004E的提示。

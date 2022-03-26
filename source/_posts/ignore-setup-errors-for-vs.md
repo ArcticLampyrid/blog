@@ -1,6 +1,7 @@
 ---
 title: 强制忽略VisualStudio启动时提示的 安装错误
 date: 2016-04-22 15:28:18
+updated: 2022-03-26 20:18:16
 category: 技术
 ---
 
@@ -29,5 +30,7 @@ category: 技术
 | Visual Studio 2012 | 11.0 |
 | Visual Studio 2013 | 12.0 |
 | Visual Studio 2015 | 14.0 | 
+| Visual Studio 2017 | 15.0 | 
+| Visual Studio 2019 | 16.0 | 
 
 **注意：出现此类提示说明安装、使用VisualStudio的过程中损坏了文件，或在安装过程中取消安装某些组件导致。有些情况下跳过检查可以继续使用VisualStudio；但部分情况下，由于文件损坏，强制跳过检查继续运行也会导致VisualStudio崩溃**
