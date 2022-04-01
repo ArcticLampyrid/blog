@@ -17,7 +17,7 @@ feed:
   path: atom.xml
 
 # URL
-url: http://almapy.com/
+url: http://alampy.com/
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
