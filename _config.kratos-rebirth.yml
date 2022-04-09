@@ -55,7 +55,13 @@ posts:
   show_cc: true
   donate: false
   share: true
-  comments: disqusjs
+  comments: 
+    provider: livere
+    enableBGImage: false
+
+livere:
+  id: city
+  uid: MTAyMC81NTk3MC8zMjQzMw==
 
 # Disqus [Disqus](https://disqus.com) 评论相关
 disqus:

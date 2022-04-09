@@ -67,11 +67,17 @@ blockquote {
         background: $tag_background;
     }
 
-    .kratos-status p a {
-        color: $link;
+    .kratos-status {
+        i {
+            color: $text_alt;
+        }
 
-        &:hover {
-            color: $link_hover;
+        p a {
+            color: $link;
+    
+            &:hover {
+                color: $link_hover;
+            }
         }
     }
 }
@@ -327,4 +333,8 @@ span.mjx-chtml.MJXc-display {
     body.custom-background {
         background-image: $background-image;
     }
+}
+
+.post-comments.bg-image textarea {
+    background: $comment-background-image right bottom no-repeat!important;
 }
