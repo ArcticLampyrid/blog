@@ -27,7 +27,7 @@ hexo.once('generateBefore', () => {
     let friendNodes = '';
     while (flist.length > 0) {
         const rndNum = Math.floor(Math.random()*flist.length);
-        friendNodes += \`<li><a target="_blank" href="\${flist[rndNum].link}"><img src="\${flist[rndNum].avatar}" onerror="this.src='${defaultAvatar}'"><h4>\${flist[rndNum].name}</h4><p>\${flist[rndNum].bio}</p></a></li>\`;
+        friendNodes += \`<li><a target="_blank" href="\${flist[rndNum].link}"><img src="\${flist[rndNum].avatar}" onerror="this.src='${defaultAvatar}';this.onerror=null;"><h4>\${flist[rndNum].name}</h4><p>\${flist[rndNum].bio}</p></a></li>\`;
         flist.splice(rndNum, 1);
     }
     document.getElementById("friendsList").innerHTML = friendNodes;
@@ -61,10 +61,18 @@ hexo.once('generateAfter', () => {
     
     const https = require('https');
     friends.list.forEach((friend) => {
-        https.get(friend.link)
-            .on('error', err => {
-                hexo.log.warn(`友链"${friend.name}"(${friend.link})出现错误，以下是错误信息：`);
-                hexo.log.warn(err);
-            });
+
+        try {
+            // 尝试请求 URL
+            https.get(friend.link)
+                .on('error', err => {
+                    hexo.log.warn(`友链"${friend.name}"(${friend.link})出现错误，以下是错误信息：`);
+                    hexo.log.warn(err);
+                });
+        } catch (e) {
+            // 如果出现问题（例如无效的 URL ），给出提示
+            hexo.log.warn(`友链"${friend.name}"(${friend.link})无法被请求，以下是错误信息：`);
+            hexo.log.warn(e);
+        }
     });
 });
