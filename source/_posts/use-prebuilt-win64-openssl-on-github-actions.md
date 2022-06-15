@@ -1,5 +1,5 @@
 ---
-title: 在GitHub Actions中使用预编译的OpenSSL
+title: 在GitHub Actions中使用预编译的Win64 OpenSSL
 date: 2022-06-15 23:04:52
 category: 技术
 ---
