@@ -40,7 +40,10 @@ jobs:
     if: github.event.check_run.name == 'fleek-ci'
     steps:
       - name: Publish
-        run: curl -i https://pubsubhubbub.appspot.com/ -F "hub.mode=publish" -F "hub.url=https://alampy.com/atom.xml"
+        run: |
+          sleep 60 # Ensure files are updated to all nodes
+          curl https://alampy.com/atom.xml > /dev/null # Ensure files are available
+          curl -i https://pubsubhubbub.appspot.com/ -F "hub.mode=publish" -F "hub.url=https://alampy.com/atom.xml"
 ```
 
 ## 为 Atom 添加 `rel="hub"`
