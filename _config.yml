@@ -19,6 +19,7 @@ feed:
   enable: true
   type: atom
   path: atom.xml
+  hub: https://pubsubhubbub.appspot.com
 
 sitemap:
     path: sitemap.xml
