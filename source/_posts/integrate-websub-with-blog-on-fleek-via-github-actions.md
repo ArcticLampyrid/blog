@@ -1,6 +1,7 @@
 ---
 title: 通过 GitHub Actions 为部署在 Fleek 的博客集成 WebSub
 date: 2022-06-25 21:31:05
+updated: 2022-06-25 22:24:05
 category: 技术
 toc: true
 ---
