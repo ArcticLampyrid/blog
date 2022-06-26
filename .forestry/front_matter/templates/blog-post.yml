@@ -1,0 +1,44 @@
+---
+label: Blog post
+hide_body: false
+fields:
+- name: title
+  type: text
+  config:
+    required: false
+  label: title
+- name: date
+  type: datetime
+  label: date
+  description: ''
+  config:
+    required: false
+    date_format: 
+    time_format: 
+    display_utc: false
+  default: now
+- name: updated
+  type: datetime
+  label: updated
+  description: ''
+  config:
+    required: false
+    date_format: 
+    time_format: 
+    display_utc: false
+  default: now
+- name: draft
+  type: boolean
+  label: draft
+- name: category
+  type: tag_list
+  default: []
+  label: category
+- name: tags
+  type: tag_list
+  default: []
+  label: tags
+- name: toc
+  type: boolean
+  label: toc
+  default: true
