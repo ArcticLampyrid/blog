@@ -17,6 +17,14 @@ vendors:
       files:
         "source/images/thumb/":
           relocate: "https://npm.sourcegcdn.com/hexo-theme-kratos-rebirth@2.0.2/source/images/thumb/"
+    aplayer:
+      files:
+        "dist/APlayer.min.css":
+          relocate: "https://npm.sourcegcdn.com/aplayer@1.10.1/dist/APlayer.min.min.css"
+    qrcode_js:
+      files:
+        "qrcode.min.js":
+          relocate: "https://npm.sourcegcdn.com/qrcode_js@1.0.0/qrcode.min.min.js"
 
 # 自定义样式
 customStyles:
