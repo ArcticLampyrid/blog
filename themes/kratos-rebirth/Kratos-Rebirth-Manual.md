@@ -64,6 +64,23 @@ toc: true
 
 ### - Top Menu 顶部导航栏相关
 
+- *(>2.0.3)* 可以尝试更优雅的新配置方案，配置格式为：
+
+``` ts
+topMenu: Array<{
+  label: String;
+  icon?: String; // Select from FontAwesome@4.7.0
+  url?: String;
+  submenu?: Array<{
+    label: String;
+    icon?: String; // Select from FontAwesome@4.7.0
+    url: String
+  }>
+}> 
+```
+
+具体可以参见 `.demo/_config.kratos-rebirth.yml` 中示例的配置哦。
+
 - 分为**menu**和**label**两个模块，控制页首的顶部导航栏内容。
 menu模块提供导航到的页面位置，label模块提供导航选项卡的显示内容。
 请注意menu项与label项需要一一对应，否则可能会出现无法正常显示的情况。
@@ -208,7 +225,6 @@ label:
 
 - **main** : 主JavaScript配置
   - **pic** : 无图片文章使用的随机图片相关设置
-    - **CDN** : (*jsdelivr/unpkg/false*)图片是否使用CDN来载入（如果有本地替换过图片，请设置为 false 以避免图片失效）
     - **random_amount** : 表示图片的编号为 1 ~ 您设定的值，默认是 20 
     - **filename** : 图片的文件名格式
   - **createTime** 站点建立的时间，请改成您站点建立的时间。该项与页脚的运行时间有直接关联，建议按照样例格式进行书写，以免出现莫名其妙的报错。
@@ -219,7 +235,7 @@ label:
   - **siteLeaveEvent** (*true/false*)是否启用站点失焦事件（只是为了卖萌，有可能会影响到历史记录，请谨慎开启）
   - **leaveTitle** 离开时候站点标题的追加内容
   - **returnTitle** 返回时候站点标题的追加内容
-  - **expire_day** 文章过期提示：距离最后更新时间多少天时，打开文件会给出提示信息
+  - **expire_day** 文章过期提示：距离最后更新时间多少天时，打开文章页面会给出提示信息。对于无标题的 Status 类默认不启用，但您可以在 Front Matter 区域内加上 `expire: true` 来手动开启。
   - **topNavScrollToggle** (*true/false*)顶部导航栏在页面向下滚动时隐藏
 
 ### - Site verify related 站点所有权验证相关
@@ -272,7 +288,7 @@ label:
 
 ``` md
 title: 文章标题
-date: 1970-01-01 00:00:00
+date: 2018-03-24 15:31:36
 categories: Demo
 tags:
 - Tag0
@@ -282,6 +298,7 @@ sticky: 100
 pic:
 comments: true
 toc: true
+expire: true
 only:
 - home
 - category

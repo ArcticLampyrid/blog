@@ -9,6 +9,15 @@ highlight_theme: night-eighties # 代码高亮主题（light | night | night-eig
 cdn: false # 请注意这里是静态资源的 CDN 来源，图片的 CDN 在下方 jsconfig.main.pic.CDN 段配置
 check_update: true
 
+vendors:
+  npm_cdn: https://npm.sourcegcdn.com/
+  packages:
+    hexo-theme-kratos-rebirth: 
+      cdn_url: null
+      files:
+        "source/images/thumb/":
+          relocate: "https://npm.sourcegcdn.com/hexo-theme-kratos-rebirth@2.0.2/source/images/thumb/"
+
 # 自定义样式
 customStyles:
   images: {} # 图片相关设置
@@ -154,11 +163,10 @@ search:
 ## 由于Javascript被压缩后难以有效编辑与生成，因而为了简化操作，将相关的配置项在生成文件时以独立的json文件写出，调用时使用fetch API获取。
 jsconfig:
   main:
-    pic:
-      CDN: true # 表示使用 CDN 加载图片
-      random_amount: 20 # 表示从1~20
-      filename: "images/thumb/thumb_{no}.webp" # 相对于主题根目录，表示文件名的格式, {no} 用以指代随机的编号。
-                                              # 如果包含 // 表示使用指定域名的绝对路径（例如第三方图床服务等），那么会忽略 CDN 选项
+    cover:
+      randomAmount: 20 # 表示从1~20
+      baseUrl: null
+      filenameTemplate: "thumb_{no}.webp" 
     createTime: "2019/07/19 17:03:12"
     donateBtn: "支持我~"
     scanNotice: "扫一扫，好不好？"
