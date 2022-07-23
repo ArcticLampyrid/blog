@@ -10,22 +10,13 @@ cdn: false # 请注意这里是静态资源的 CDN 来源，图片的 CDN 在下
 check_update: true
 
 vendors:
-  npm_cdn: https://npm.sourcegcdn.com/
+  npm_cdn: https://unpkg.com/
   packages:
     hexo-theme-kratos-rebirth: 
       cdn_url: null
       files:
         "source/images/thumb/":
-          relocate: "https://npm.sourcegcdn.com/hexo-theme-kratos-rebirth@2.0.2/source/images/thumb/"
-    aplayer:
-      files:
-        "dist/APlayer.min.css":
-          relocate: "https://npm.sourcegcdn.com/aplayer@1.10.1/dist/APlayer.min.min.css"
-    qrcode_js:
-      files:
-        "qrcode.min.js":
-          relocate: "https://npm.sourcegcdn.com/qrcode_js@1.0.0/qrcode.min.min.js"
-
+          relocate: "https://unpkg.com/hexo-theme-kratos-rebirth@2.0.2/source/images/thumb/"
 # 自定义样式
 customStyles:
   images: {} # 图片相关设置
