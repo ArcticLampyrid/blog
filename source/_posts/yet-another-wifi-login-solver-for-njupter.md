@@ -24,5 +24,5 @@ Repo: https://github.com/ArcticLampyrid/njupt_wifi_login
 3. 配置 `njupt_wifi_login` 开机自动启动（可以通过计划任务）
 
 ## 系统要求
-目前是 Windows-only 的，因为我不怎么用 Linux 当主力，而侦听网络变更通知是 platform-special 的。  
+目前是 Windows-only 的，因为我不怎么用 Linux 当主力，而侦听网络变更通知是 platform-specific 的。  
 对于 Linux 支持，可以尝试使用 `NETLINK_ROUTE` 实现侦听，可以考虑用 [`rtnetlink`](https://github.com/little-dude/netlink/tree/master/rtnetlink) 库。PR is welcome. 🤣  
