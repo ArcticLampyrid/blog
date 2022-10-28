@@ -1,6 +1,6 @@
 ---
 date: 2022-10-15T18:05:08+08:00
-updated: 2022-10-15T18:05:08+08:00
+updated: 2022-10-28T15:11:51+08:00
 category: 技术
 title: 又一个南邮 WiFi 自动登录工具（PC）
 tag: [NJUPT, Rust]
@@ -14,7 +14,13 @@ Repo: https://github.com/ArcticLampyrid/njupt_wifi_login
 - 得益于 Rust 的 native 和 zero-cost abstraction，启动速度极快，长驻后台（侦听网络变更通知）的占用极小
 
 ## 使用
-1. [下载二进制文件](https://github.com/ArcticLampyrid/njupt_wifi_login/releases/tag/v0.1.0)或从[源代码](https://github.com/ArcticLampyrid/njupt_wifi_login)构建
+### 使用配置器
+*在 v0.1.1 及更高版本中，可用配置器完成配置*
+1. [下载二进制文件](https://github.com/ArcticLampyrid/njupt_wifi_login/releases)或从[源代码](https://github.com/ArcticLampyrid/njupt_wifi_login)构建
+2. 打开 `njupt_wifi_login_configurator`，填写你的账号信息，勾选 Enable，点击 Save 按钮
+3. 重启操作系统后生效
+### 手动配置
+1. [下载二进制文件](https://github.com/ArcticLampyrid/njupt_wifi_login/releases)或从[源代码](https://github.com/ArcticLampyrid/njupt_wifi_login)构建
 2. 将用户名和密码写入配置文件（如 `njupt_wifi.yml`）
    ```yaml
    isp: CT # 移动用 CMCC，电信用 CT，南邮自身的用 EDU
