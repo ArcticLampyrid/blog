@@ -19,6 +19,7 @@ Repo: https://github.com/ArcticLampyrid/njupt_wifi_login
 1. [下载二进制文件](https://github.com/ArcticLampyrid/njupt_wifi_login/releases)或从[源代码](https://github.com/ArcticLampyrid/njupt_wifi_login)构建
 2. 打开 `njupt_wifi_login_configurator`，填写你的账号信息，勾选 Enable，点击 Save 按钮
 3. 重启操作系统后生效
+
 ### 手动配置
 1. [下载二进制文件](https://github.com/ArcticLampyrid/njupt_wifi_login/releases)或从[源代码](https://github.com/ArcticLampyrid/njupt_wifi_login)构建
 2. 将用户名和密码写入配置文件（如 `njupt_wifi.yml`）
