@@ -20,8 +20,6 @@ toc: true
 
 由于本模板使用了和默认模板landscape一样的ejs引擎，因此当您完成Hexo站点的安装后，您应该能够直接运行本主题。
 
-在运行之前，请您将`_config.yml.example`文件复制一份，并重命名为`_config.yml`；
-
 ## 主题配置
 
 **配置文件地址：`./kratos-rebirth/_config.yml`**
@@ -81,6 +79,8 @@ topMenu: Array<{
 
 具体可以参见 `.demo/_config.kratos-rebirth.yml` 中示例的配置哦。
 
+{% collapse "旧的导航栏配置归档 - 已不推荐再这样使用" %}
+
 - 分为**menu**和**label**两个模块，控制页首的顶部导航栏内容。
 menu模块提供导航到的页面位置，label模块提供导航选项卡的显示内容。
 请注意menu项与label项需要一一对应，否则可能会出现无法正常显示的情况。
@@ -109,6 +109,8 @@ label:
 
 **额外提示：**二级菜单功能可能会和旧版本的部分函数发生冲突，如果出现意外报错的话可以考虑**检查一下是否存在更新的Hexo版本**，或者[去Github提一个Issue](https://github.com/Candinya/Kratos-Rebirth/issues)。
 目前开发使用的环境(`package.json`文件)可以参见[🎁 使用环境小贴士](https://github.com/Candinya/Kratos-Rebirth#-%E4%BD%BF%E7%94%A8%E7%8E%AF%E5%A2%83%E5%B0%8F%E8%B4%B4%E5%A3%AB)
+
+{% endcollapse %}
 
 ### - Footer 页脚显示相关
 
@@ -224,9 +226,10 @@ label:
 ### - JavaScript 相关的配置
 
 - **main** : 主JavaScript配置
-  - **pic** : 无图片文章使用的随机图片相关设置
-    - **random_amount** : 表示图片的编号为 1 ~ 您设定的值，默认是 20 
-    - **filename** : 图片的文件名格式
+  - **cover** : 无图片文章使用的随机封面图片相关设置
+    - **randomAmount** : 表示图片的编号为 1 ~ 您设定的值，默认是 20 
+    - **baseUrl** : 图片的基础链接，例如使用本地图片则为 `/images/thumb/` （请注意您的站点路径）
+    - **coverFileNameTemplate** : 图片的文件名格式模板，默认为 `thumb_{no}.webp` ，使用时代码会将 `{no}` 替换成随机的数字编号
   - **createTime** 站点建立的时间，请改成您站点建立的时间。该项与页脚的运行时间有直接关联，建议按照样例格式进行书写，以免出现莫名其妙的报错。
   - **donateBtn** 捐助按钮上显示的文字，建议不要太长以免溢出，如果不显示捐助按钮的话就不用去管它啦\~
   - **kr.scanNotice** 二维码小窗口上的小标题，如果不显示捐助按钮的话也不用去管它啦\~

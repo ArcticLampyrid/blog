@@ -346,6 +346,38 @@ code, kbd {
   border-radius: 3px;
   padding: 1px 6px;
   background-color: #6c6c6cc6;
+  white-space: normal;
+}
+
+// prismjs 或 无高亮模式 或 highlightjs的nowarp模式
+pre:has(code) {
+  border-radius: 8px;
+  padding-top: 30px!important;
+  position: relative;
+  overflow: auto;
+  background-color: #1d1f21;
+  font-size: 14px;
+  font-weight: unset;
+
+  &::before {
+      content: " ";
+      position: absolute;
+      -webkit-border-radius: 50%;
+      border-radius: 50%;
+      background-color: #fc625d;
+      width: 12px;
+      height: 12px;
+      left: 10px;
+      top: 10px;
+      -webkit-box-shadow: 20px 0 #fdbc40, 40px 0 #35cd4b;
+      box-shadow: 20px 0 #fdbc40, 40px 0 #35cd4b;
+  }
+}
+
+pre code {
+  white-space: pre;
+  background-color: inherit;
+  font-size: inherit;
 }
 
 legend {
@@ -436,7 +468,8 @@ svg:not(:root) {
 table {
   border-spacing: 0;
   border-collapse: collapse;
-  margin: 2em 1em;
+  margin: 2em 0;
+  width: 100%;
 
   *[class*=col-] {
     position: static;
@@ -447,14 +480,10 @@ table {
     display: table-column;
   }
 
-  th {
-    color: white;
-    background: #2bda;
-  }
-
   td, th {
-    padding: .2em 1em;
-    border: 1px solid lightblue;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    font-size: 14px;
 
     [class*=col-] {
       display: table-cell;
@@ -656,6 +685,10 @@ table {
     flex: 1;
     border-left: 1px dashed;
     flex-direction: column;
+  }
+
+  a {
+    color: #1e8cdb;
   }
 
   ul, p {
@@ -1487,7 +1520,7 @@ ul.kratos-post-meta {
   }
 
   .kratos-post-inner-toc {
-    display: none;
+    display: none!important; // So it won't be overwritten by hbe decrypt func
     border: 2px dashed #ddd;
     border-radius: 10px;
     padding-top: 15px;
@@ -1495,7 +1528,7 @@ ul.kratos-post-meta {
 
   @media(max-width:991px) {
     .kratos-post-inner-toc {
-      display: block;
+      display: block!important; // So it won't be overwritten by hbe decrypt func
     }
   }
 
@@ -2186,6 +2219,10 @@ ul.kratos-post-meta {
   }
 
   #krw-toc {
+    // Use important to prevent its style being by hbe decrypt func 
+    // (https://github.com/D0n9X1n/hexo-blog-encrypt/blob/7a820d3bd1b2d1f6aa748f870230f892fd72b330/lib/hbe.js#L213-L218)
+    display: block!important;
+
     .toc {
       padding: 0;
       overflow: auto;
@@ -2352,6 +2389,7 @@ body.scroll-down .kr-tool {
 .linkpage {
   ul {
     color: rgba(255, 255, 255, .15);
+    padding: 0;
   
     &:after {
       content: " ";
@@ -2617,7 +2655,7 @@ body.scroll-down .kr-tool {
 }
 
 @media(max-width:460px) {
-  .linkpage li {
+  .linkpage ul li {
     width: 97%;
   }
 
@@ -2795,7 +2833,8 @@ td.code {
 .post-comments {
   margin-top: 16px;
   padding: 10px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, .1)
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+  word-break: break-all;
 }
 
 .index-post {
@@ -2944,6 +2983,13 @@ span.mjx-chtml.MJXc-display {
     padding: 0;
     border-radius: 4px;
   }
+}
+
+mjx-container {
+  display: inline-block;
+  vertical-align: bottom;
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 /******************* Images ********************/
