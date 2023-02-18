@@ -186,9 +186,9 @@ site_verify:
 
 # Friends 友链相关内容
 friends:
-  list: []
-  # - name: "猫猫①号"
-  #   bio: "喵~"
-  #   avatar: "../images/avatar.webp"
-  #   link: "#"
+  list:
+    - name: "NKID00"
+      bio: "是软硬件全栈的大佬耶~"
+      avatar: "https://nkid00.name/avatar_light.webp"
+      link: "https://nkid00.name/"
   verify: true # 验证每个友链的可访问性，炸了会有提示
