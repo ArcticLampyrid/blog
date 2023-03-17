@@ -8,6 +8,7 @@ enable_dark: true
 highlight_theme: night-eighties # 代码高亮主题（light | night | night-eighties | night-blue | night-bright）
 cdn: false # 请注意这里是静态资源的 CDN 来源，图片的 CDN 在下方 jsconfig.main.pic.CDN 段配置
 check_update: true
+canonical: true
 
 vendors:
   npm_cdn: https://unpkg.com/
