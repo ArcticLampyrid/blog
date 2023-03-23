@@ -1,6 +1,6 @@
 ---
 date: 2023-02-07 14:58:40
-updated: 2023-02-07 14:58:40
+updated: 2023-03-23 22:01:40
 category: 技术
 title: 在编译时转译 TypeScript 的 import 语句中的绝对路径
 excerpt: 在 webpack with ts-loader 环境下使用 transformer 对 import 语句中的路径进行转译，以在库代码使用绝对路径的同时保证开箱即用。
@@ -22,7 +22,7 @@ excerpt: 在 webpack with ts-loader 环境下使用 transformer 对 import 语�
 > 
 > （类比 jvm 环境，tsconfig 的所有配置都是单纯修改 CompilerClassPath 的）
 
-这对于面向最终用户 (End-Users) 的产品问题不大，很容易在 runtime 中通过 `NODE_PATH` 环境变量等方式指导 runtime 如何查找模块。然而对于库作者而言，node modules 机制并没有提供一个库级别 (package-level) 的 `path`，而要求所有库使用者对 tsc、runtime 等的配置做出修改将是不可接受的。
+这对于面向最终用户 (End-Users) 的产品问题不大，很容易在 launch 时通过 `NODE_PATH` 环境变量等方式指导 runtime 在哪些路径查找模块。然而对于库作者而言，node modules 机制并没有提供一个库级别 (package-level) 的 `path`，而要求所有库使用者对 tsc、runtime 等的配置做出修改将是不可接受的。
 
 ## 解决方案
 手动修改所有绝对路径为相对路径是最简单的一种方案，然而这可能引入工程管理上的麻烦。另一种方法是使用 transformer 在编译时转译绝对路径。通过检索资料，[LeDDGroup/typescript-transform-paths](https://github.com/LeDDGroup/typescript-transform-paths) 正是一个可用于此用途的转译器。
