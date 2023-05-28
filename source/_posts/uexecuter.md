@@ -15,5 +15,8 @@ UEXECUTER 是一个可爱的函数调用器，采用人类可读的字符串作�
 ### Why `UEXECUTER` other than `UEXECUTOR` ?
 Because it's CUTE.
 
+## 展示
+<iframe src="//player.bilibili.com/player.html?aid=401735237&bvid=BV1Lo4y1M7mK&cid=1145341007&page=1" allowfullscreen="allowfullscreen" width="100%" height="500" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+
 ## 代码
 见 Github Repo： [ArcticLampyrid/uexecuter](https://github.com/ArcticLampyrid/uexecuter)
