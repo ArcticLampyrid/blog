@@ -1,7 +1,7 @@
 ---
 title: Git 全分支代码打包脚本
-date: 2022-06-11 02:31:11
-updated: 2022-06-11 02:31:11
+date: 2023-06-11 02:31:11
+updated: 2023-06-11 02:31:11
 category: 技术
 tag: [PowerShell]
 ---
