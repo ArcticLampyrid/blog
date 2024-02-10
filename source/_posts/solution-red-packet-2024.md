@@ -6,7 +6,7 @@ category: 技术
 toc: true
 ---
 ## 谜面
-详见 [2023 年度总结（附解谜红包）](life/15.md)
+详见 {% post_link life/15 %}
 
 ## 解谜方法
 ### 获取 zip 文件
