@@ -65,7 +65,7 @@ table {
 }
 
 .kratos-entry-border-new {
-    a {
+    a, i {
         color: $text;
     }
     
@@ -269,6 +269,17 @@ span.blur {
   &:hover {
     color: $text!important;
   }
+}
+
+#search-input {
+    background-color: $search_background;
+    color: $search_text;
+
+    &:active, &:focus {
+      border-color: $search_border;
+      box-shadow: $search_shadow;
+    }
+
 }
 
 /******************* Plugins ********************/

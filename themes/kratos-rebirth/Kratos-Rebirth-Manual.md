@@ -62,19 +62,16 @@ toc: true
 
 ### - Top Menu 顶部导航栏相关
 
-- *(>2.0.3)* 可以尝试更优雅的新配置方案，配置格式为：
+- *(>2.0.3)* 可以尝试更优雅的新配置方案，每一项的配置含义解释为：
 
-``` ts
-topMenu: Array<{
-  label: String;
-  icon?: String; // Select from FontAwesome@4.7.0
-  url?: String;
-  submenu?: Array<{
-    label: String;
-    icon?: String; // Select from FontAwesome@4.7.0
-    url: String
-  }>
-}> 
+``` yaml
+- label: 这个菜单的标签文字
+  icon: 这个菜单前的图标（在 FontAwesome 4.7.0 图标库中选择，可以不设置）
+  url: 这个菜单指向的链接（站内或是站外均可）
+  submenu: 这个菜单是否为一个二级菜单，有了这个选项就会忽略上面的 url
+    - label: 二级菜单项的标签文字 
+      icon: 二级菜单前的图标（在 FontAwesome 4.7.0 图标库中选择，可以不设置）
+      url: 二级菜单项指向的链接
 ```
 
 具体可以参见 `.demo/_config.kratos-rebirth.yml` 中示例的配置哦。
@@ -116,8 +113,19 @@ label:
 
 - **group_link** : 控制是否在页面右下角显示群聊的加入按钮。如果显示的话，这里可以指定加群的链接。无需显示的话请留空（而*不是*删除这个设置项），相关的代码会自行处理结构生成关系。
 
-- **contact** : 联系方式相关，控制是否在页脚(./kratos-rebirth/layout/\_partial/footer.ejs)显示各种联系方式的按钮
+- ~~**contact**~~ （即将废弃）: 联系方式相关，控制是否在页脚(./kratos-rebirth/layout/\_partial/footer.ejs)显示各种联系方式的按钮
 如果要启用的话，请输入相关联系方式的代码，直接输入用户名即可（fediverse的实例需要输入实例地址，邮箱请使用mail@example.com这样的格式）；无需显示的内容请留空。
+
+- **footerLinks** : 控制在页脚显示各种联系方式的按钮，为数组，其中每个元素应为以下的样式：
+
+  ``` yaml
+  - icon: # 和 html 二选一，该选项表示使用来自 FontAwesome 4.7.0 图标库，内容为图标库中的唯一标识 （会被渲染为 <i class="fa fa-icon %>"></i>
+    html: # 和 icon 二选一，该选项表示插入自定义的 HTML 作为标识，例如您可在此放置一串 svg
+    link: # 按钮导向的目标链接
+    currentPage: # 可选，默认为否，启用该选项表示在当前页内打开目标链接
+  ```
+
+  具体的样例可以参照项目的 `.demo/_config.kratos_rebirth.yml` 配置样例。
 
 - **timenotice** : 本站运行时间前的提示文本。
 
@@ -136,6 +144,10 @@ label:
 - **comments** : 
   - **provider**: (*disqus/disqusjs/valine/twikoo/waline/gitalk/gitment/false*)会从`layout/_comments`文件夹中加载指定的评论系统，您也可以自定义其他的解决方案。如果不想开启评论的话，那就还是设置为false吧\~
   - **enableBGImage**: (*true/false*)控制是否在评论系统中显示背景图片
+
+- **wordCount** : 
+  - **enable**: (*true/false*)控制文章页面是否启用字数统计显示，默认为 `true`
+  - **threshold**: 控制文章页面字数统计功能进入估算模式的字符数分割点，默认为 `1500`
 
 ### - Disqus 评论相关
 
@@ -264,6 +276,10 @@ label:
   - **page** : 页面相关的参数，您可以配置任意多您需要的页面参数，提供的样例可供您参考
   - **list** : 友链列表，您可以参照提供的样例进行对应的复制修改，每一项可以提供显示的名字(name)、简介(bio)、头像链接(avatar)和目标站点链接(link)，无用项建议留空（而不是直接删除）
   - **verify** : 是否在每次启动时验证友联的可访问性
+
+### - Misc 杂项
+
+- **showWordCountEstimateWavy** : 在文章字数处显示表示大约字数的波浪号
 
 -----
 

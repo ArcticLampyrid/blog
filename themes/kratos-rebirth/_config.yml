@@ -11,7 +11,7 @@ vendors:
     valine: 
       version: 1.4.18
     "@waline/client": 
-      version: 1.6.0
+      version: 2.14.1
     bootstrap: 
       version: 3.3.4
     nprogress: 
@@ -20,8 +20,6 @@ vendors:
       version: 1.10.1
     "@fancyapps/fancybox": 
       version: 3.5.7
-    clipboard: 
-      version: 2.0.6
     layui-src: 
       version: 2.5.5
     font-awesome: 
@@ -34,3 +32,19 @@ vendors:
       version: 9.1.1
     meting:
       version: 2.0.1
+
+# Footer 页脚配置
+group_link: 
+contact: # 出于兼容性考虑，继续保留
+  weibo: 
+  mail: 
+  telegram:
+  twitter: 
+  facebook: 
+  linkedin: 
+  fediverse:
+    instance:
+    username:
+  github:
+  rss:
+footerLinks: []
