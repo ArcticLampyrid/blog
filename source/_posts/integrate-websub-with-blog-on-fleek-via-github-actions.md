@@ -1,7 +1,7 @@
 ---
 title: 通过 GitHub Actions 为部署在 Fleek 的博客集成 WebSub
 date: 2022-06-25 21:31:05
-updated: 2022-06-25 22:24:05
+updated: 2024-02-16 03:25:05
 category: 技术
 toc: true
 ---
@@ -38,7 +38,8 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    if: github.event.check_run.name == 'fleek-ci'
+    # 2024-02-16 更新
+    if: github.event.check_run.app.slug == 'fleek-co'
     steps:
       - name: Publish
         run: |
