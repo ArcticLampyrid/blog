@@ -82,6 +82,7 @@ default_category: uncategorized
 category_map:
   技术: tech
   生活: life
+  好物: awesome
 tag_map:
 
 # Metadata elements
