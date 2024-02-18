@@ -41,6 +41,9 @@ topMenu:
   - label: 溯源
     icon: paper-plane
     url: /about/
+  - label: 开往
+    icon: subway
+    url: https://www.travellings.cn/go.html
 
 # Footer 页脚配置
 group_link: 
