@@ -1,7 +1,7 @@
 ---
 title: 溯源
 date: 2022-03-12 22:59:26
-updated: 2024-02-18 01:23:45
+updated: 2024-02-20 03:57:44
 ---
 #### 引
 亲爱的旅人，感谢您追寻萤火之光，来到这里。  
@@ -11,6 +11,12 @@ updated: 2024-02-18 01:23:45
 在不便使用中文字符的情况下，也可以写作 alampy / ArcticLampyrid。
 
 不过日常中大家更多地称呼我为橙子，源于我曾用的经典头像 —— 一只橙子。
+
+#### 如何捕获
+- **Telegram**：[私聊 @alampy](https://t.me/alampy) | [频道 @alampy_feed](https://t.me/alampy_feed)
+- **GitHub**：[ArcticLampyrid](https://github.com/ArcticLampyrid)
+- **邮箱**：[ArcticLampyrid@outlook.com](mailto:ArcticLampyrid@outlook.com)
+- **云村**：[极地萤火](https://music.163.com/user/home?id=1504287396)
 
 #### 属性
 - **00后**(2003)
