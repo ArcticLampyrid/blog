@@ -1,7 +1,7 @@
 ---
 title: 使用带启动 PIN 的 BitLocker
 date: 2024-02-19T14:43:45+08:00
-updated: 2024-02-19T16:05:42+08:00
+updated: 2024-02-19T17:44:25+08:00
 category: 技术
 ---
 ## 基本概念
@@ -14,7 +14,7 @@ TPM 理论上仅在系统完整性被验证时才会下发密钥，而具有系�
 - **DMA 攻击**：硬件完整性可被伪造。许多外设（如网卡、显卡）具有 DMA 功能，可以在系统启动后直接访问内存。通过伪造、替换硬件（并欺骗系统完整性验证），可以读取 TPM 下发的密钥。已有利用案例：[参考这篇文章](https://mp.weixin.qq.com/s/lLTR0XI6br46lEyaDCzfXA)（[备用链接](http://web.archive.org/web/20230713193954/https://mp.weixin.qq.com/s/lLTR0XI6br46lEyaDCzfXA)）
 - **嗅探 LPC 数据总线**：在系统启动时，通过逻辑分析仪嗅探 LPC 数据总线，获取 TPM 下发的密钥。参见 [Breaking Bitlocker - Bypassing the Windows Disk Encryption](https://www.youtube.com/watch?v=wTl4vEednkQ)，该攻击仅对分立式 TPM 有效，对内嵌于 CPU 内的 fTPM 无效。
 
-**⌈启动 PIN⌋** 不同于 Windows 登陆 PIN，它是参与解锁数据的密钥（key）的一部分，而不是用户身份验证的口令（password）的一部分。开启 ⌈启动 PIN⌋ 后，即使获取到 TPM 下发的密钥，仍无法解锁数据。需要输入 PIN 码后，使用启动 PID 和 TPM 下发的密钥一起参与计算，才能得到解锁数据的密钥。
+**⌈启动 PIN⌋** 不同于 Windows 登陆 PIN，它是参与解锁数据的密钥（key）的一部分，而不是用户身份验证的口令（password）的一部分。开启 ⌈启动 PIN⌋ 后，即使获取到 TPM 下发的密钥，仍无法解锁数据。需要输入 PIN 码后，使用启动 PIN 和 TPM 下发的密钥一起参与计算，才能得到解锁数据的密钥。
 
 ## 如何使用启动 PIN
 打开组策略（`gpedit.msc`），找到计算机配置 -> 管理模板 -> Windows 组件 -> BitLocker 驱动器加密 -> 操作系统驱动器 -> 预启动身份验证。选择“已启用”，在 ⌈配置 TPM 启动 PIN⌋ 中选择 ⌈有 TPM 时需要启动 PIN⌋。
