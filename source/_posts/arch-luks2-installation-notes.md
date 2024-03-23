@@ -1,7 +1,7 @@
 ---
 title: Arch Linux 安装笔记（LUKS2 + Secure Boot + TPM + PIN）
 date: 2024-03-23 18:12:00
-updated: 2024-03-23 18:12:00
+updated: 2024-03-23 18:57:00
 category: 技术
 toc: true
 ---
@@ -38,7 +38,7 @@ reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\TimeZoneInformation
 3. 使用 Rufus 制作 UEFI 启动盘（这里在 Windows 下操作，如果你从其他系统操作，请自行查找相应的工具）
 
 ## 安装 Arch Linux
-1. 启动到 LiveCD
+1. 启动到 LiveCD。注意 Live CD 不能使用 Secure Boot 启动，请在安装过程中临时关闭 Secure Boot。
 2. 使用 `cat /sys/firmware/efi/fw_platform_size` 验证 UEFI 引导模式，应为 `64`
 3. 使用 `ip link` 检查 LiveCD 环境的网络连接
 4. 使用 `timedatectl` 从网络上更新时间
@@ -164,6 +164,21 @@ systemctl start NetworkManager
       usermod -aG sudo alampy
       ```
    2. 然后运行编辑配置 `visudo`，取消注释 `%sudo ALL=(ALL:ALL) ALL`
+
+## 配置 Secure Boot
+进入 UEFI 设置，重置 Secure Boot 模式为 Setup Mode，进入系统：
+```bash
+sbctl enroll-keys -mcft
+```
+
+| 参数 | 含义                 |
+| ---- | -------------------- |
+| -m   | 添加微软密钥         |
+| -c   | 添加我们的自定义密钥 |
+| -f   | 添加固件内置密钥     |
+| -t   | 添加 TPM 事件日志    |
+
+重启进入 UEFI 设置，开启 Secure Boot。
 
 ## 配置 TPM + PIN 解密模式
 ```bash
