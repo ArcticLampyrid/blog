@@ -1,7 +1,7 @@
 ---
 title: Arch Linux 安装笔记（LUKS2 + Secure Boot + TPM + PIN）
 date: 2024-03-23 18:12:00
-updated: 2024-03-23 18:57:00
+updated: 2024-03-31 19:35:00
 category: 技术
 toc: true
 ---
@@ -348,12 +348,17 @@ pacman -S nvidia-open
 
 编辑 `/etc/kernel/cmdline`，添加内核参数：
 ```
-fbdev=1
+nvidia_drm.fbdev=1 nvidia_drm.modeset=1
 ```
 
 重新生成 initramfs：
 ```bash
 mkinitcpio -P
+```
+
+## 安装音频驱动
+```bash
+pacman -S sof-firmware
 ```
 
 ## 蓝牙配对
