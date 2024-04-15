@@ -1,7 +1,7 @@
 ---
 title: 修复 Legion Y9000X 2022 IAH7 内置扬声器在 Linux 下无声音的问题
 date: 2024-04-13 00:01:55
-updated: 2024-04-13 08:45:35
+updated: 2024-04-16 01:07:35
 category: 技术
 toc: true
 ---
@@ -219,3 +219,6 @@ MAKEFLAGS="-j$(nproc)"
 
 ## 另记
 又通宵了一个晚上（虽然是因为我菜，对内核不了解🥹），困死了。果然晚上不适合开始任何非劳力型的工作。
+
+{% alertbox info "正在试图将该补丁提交到 Linux Kernel 主线，相关讨论见：
+https://lore.kernel.org/lkml/TYCP286MB25352F3E995FED9CCE90F1F6C40B2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM/T/" %}
