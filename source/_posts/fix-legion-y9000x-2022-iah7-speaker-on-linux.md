@@ -281,6 +281,75 @@ index cdcb28aa9d7b..ac729187f6a7 100644
 ```
 {% endcollapse %}
 
+### 制作 Patch (v3)
+#### 修改日志
+根据 LKML 上的讨论，spkid GPIO Index 应该设置为 2，而不是 1。
+
+#### 补丁文件 `sound_17aa386e_fix.patch`
+{% collapse "sound_17aa386e_fix.patch" %}
+```diff
+diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
+index d3fa6e136744..d9c7b4034684 100644
+--- a/sound/pci/hda/cs35l41_hda.c
++++ b/sound/pci/hda/cs35l41_hda.c
+@@ -10,6 +10,7 @@
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <sound/hda_codec.h>
++#include <linux/irq.h>
+ #include <sound/soc.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/spi/spi.h>
+@@ -1511,6 +1512,14 @@ static int cs35l41_hda_apply_properties(struct cs35l41_hda *cs35l41)
+ 	irq_pol = cs35l41_gpio_config(cs35l41->regmap, hw_cfg);
+ 
+ 	if (cs35l41->irq && using_irq) {
++		struct irq_data *irq_data;
++
++		irq_data = irq_get_irq_data(cs35l41->irq);
++		if (irq_data && irqd_trigger_type_was_set(irq_data)) {
++			irq_pol = irqd_get_trigger_type(irq_data);
++			dev_info(cs35l41->dev, "Using configured IRQ Polarity: %d\n", irq_pol);
++		}
++
+ 		ret = devm_regmap_add_irq_chip(cs35l41->dev, cs35l41->regmap, cs35l41->irq,
+ 					       IRQF_ONESHOT | IRQF_SHARED | irq_pol,
+ 					       0, &cs35l41_regmap_irq_chip, &cs35l41->irq_data);
+diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+index 8fb688e41414..ee195737d388 100644
+--- a/sound/pci/hda/cs35l41_hda_property.c
++++ b/sound/pci/hda/cs35l41_hda_property.c
+@@ -109,6 +109,7 @@ static const struct cs35l41_config cs35l41_config_table[] = {
+ 	{ "10431F1F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 0, 0, 0 },
+ 	{ "10431F62", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
+ 	{ "10433A60", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
++	{ "17AA386E", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 2, -1, 0, 0, 0 },
+ 	{ "17AA386F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
+ 	{ "17AA3877", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
+ 	{ "17AA3878", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
+@@ -500,6 +501,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+ 	{ "CSC3551", "10431F1F", generic_dsd_config },
+ 	{ "CSC3551", "10431F62", generic_dsd_config },
+ 	{ "CSC3551", "10433A60", generic_dsd_config },
++	{ "CSC3551", "17AA386E", generic_dsd_config },
+ 	{ "CSC3551", "17AA386F", generic_dsd_config },
+ 	{ "CSC3551", "17AA3877", generic_dsd_config },
+ 	{ "CSC3551", "17AA3878", generic_dsd_config },
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index cdcb28aa9d7b..ac729187f6a7 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -10382,6 +10382,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x3853, "Lenovo Yoga 7 15ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
+ 	SND_PCI_QUIRK(0x17aa, 0x3855, "Legion 7 16ITHG6", ALC287_FIXUP_LEGION_16ITHG6),
+ 	SND_PCI_QUIRK(0x17aa, 0x3869, "Lenovo Yoga7 14IAL7", ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
++	SND_PCI_QUIRK(0x17aa, 0x386e, "Legion Y9000X 2022 IAH7", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x17aa, 0x386f, "Legion 7i 16IAX7", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x17aa, 0x3870, "Lenovo Yoga 7 14ARB7", ALC287_FIXUP_YOGA7_14ARB7_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x3877, "Lenovo Legion 7 Slim 16ARHA7", ALC287_FIXUP_CS35L41_I2C_2),
+```
+{% endcollapse %}
+
 ### 构建内核
 克隆 Arch Linux 内核包构建文件:
 ```bash
@@ -350,5 +419,6 @@ MAKEFLAGS="-j$(nproc)"
 
 {% alertbox info "正在试图将该补丁提交到 Linux Kernel 主线，相关讨论见：
 - https://lore.kernel.org/lkml/TYCP286MB25352F3E995FED9CCE90F1F6C40B2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM/T/
-- https://lore.kernel.org/lkml/TYCP286MB253523D85F6E0ECAA3E03D58C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM/T/"
+- https://lore.kernel.org/lkml/TYCP286MB253523D85F6E0ECAA3E03D58C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM/T/
+- https://lore.kernel.org/lkml/TYCP286MB25357A4599E935F26A8AAB24C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM/T/"
 " %}
