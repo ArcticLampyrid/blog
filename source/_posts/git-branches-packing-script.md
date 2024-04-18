@@ -4,6 +4,7 @@ date: 2023-06-11 02:31:11
 updated: 2023-06-11 02:31:11
 category: 技术
 tag: [PowerShell]
+permalink: 2023/06/10/git-branches-packing-script
 ---
 使用 ChatGPT 创作（只修改了一点点），将某个 Git 仓库中的全部分支的代码都复制到一个文件夹里面，并按分支名创建子文件夹。
 <!-- more -->

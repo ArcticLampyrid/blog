@@ -3,6 +3,7 @@ title: 在 VS2022 中编辑 .NET 4.0 项目
 date: 2024-02-17 01:24:25
 updated: 2024-02-17 01:24:25
 category: 技术
+permalink: 2024/02/16/develop-dotnet-v4-project-with-vs2022
 ---
 ## 问题
 试图打开一个 old-style 的 .NET 4.0 项目（远古遗迹）时，VS2022 提示需要安装 .NET Framework 4.0 开发工具包，但是 4.0 并没有现代的 .NET SDK 安装程序。
