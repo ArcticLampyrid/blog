@@ -1,7 +1,7 @@
 ---
 title: 修复 Legion Y9000X 2022 IAH7 内置扬声器在 Linux 下无声音的问题
 date: 2024-04-13 00:01:55
-updated: 2024-04-16 01:07:35
+updated: 2024-04-18 15:15:33
 category: 技术
 toc: true
 ---
@@ -55,14 +55,14 @@ Name (_SUB, "17AA386E")  // _SUB: Subsystem ID
 
 即我们需要处理的设备 Subsystem ID 为 `17AA386E`
 
-### 制作 Patch
+### 制作 Patch (v1)
 从 https://github.com/archlinux/linux/tree/v6.8.5-arch1 查看内核源码，修改相关文件。
 
 #### 修改 `sound/pci/hda/patch_realtek.c`
-和大部分机型不同，Y9000X 2022 IAH7 的两个放大芯片的中断 IRQ 相同。为了避免以下错误，不直接使用 `generic_dsd_config`
+和大部分机型不同，Y9000X 2022 IAH7 的两个放大芯片的中断 IRQ 相同，且中断引脚通过 APIC 连接。为了避免以下错误，不直接使用 `generic_dsd_config`
 > genirq: Flags mismatch irq 58. 00002088 (cs35l41 IRQ1 Controller) vs. 00002088 (cs35l41 IRQ1 Controller)
 
-我们自己写一个配置函数：
+作为 workaround，我们自己写一个配置函数，关闭第二个放大器的中断功能：
 ```c
 static int single_interrupt_dsd_config(struct cs35l41_hda *cs35l41, struct device *physdev, int id, const char *hid)
 {
@@ -153,6 +153,134 @@ index f4a02bf..bac3161 100644
 ```
 {% endcollapse %}
 
+### 制作 Patch (v2)
+#### 问题分析
+上述方法直接关闭了第二个放大器的中断功能，这可能导致某些状态下无法自动重新初始化放大器。
+
+关注错误：
+> genirq: Flags mismatch irq 58. 00002088 (cs35l41 IRQ1 Controller) vs. 00002088 (cs35l41 IRQ1 Controller)
+
+这非常令人困惑，因为日志给出的两个 Flags 是相同的。
+
+进一步调查显示，错误由 `__setup_irq` 函数中的以下检查引发：
+
+```c
+if (irqd_trigger_type_was_set(&desc->irq_data)) {
+    oldtype = irqd_get_trigger_type(&desc->irq_data);
+} else {
+    oldtype = new->flags & IRQF_TRIGGER_MASK;
+    irqd_set_trigger_type(&desc->irq_data, oldtype);
+}
+
+if (!((old->flags & new->flags) & IRQF_SHARED) ||
+    (oldtype != (new->flags & IRQF_TRIGGER_MASK)))
+    goto mismatch;
+```
+
+可以看到，检查使用的 `oldtype` 实际上是通过 `irqd_get_trigger_type` 获取的。
+虽然所有的中断都是用标志位 `0x00002088 = IRQF_ONESHOT | IRQF_SHARED | IRQF_TRIGGER_LOW` 请求的。
+但这里获取到的 `oldtype` 是 `IRQF_TRIGGER_RISING (0x1)`（遵从了 DSDT 表中的配置） 而非 `IRQF_TRIGGER_LOW (0x8)`，导致了错误。
+
+由于我们的中断脚是连接到 APIC 的，关注 `platform_get_irq_optional`：
+```c
+if (r && r->flags & IORESOURCE_BITS) {
+	struct irq_data *irqd;
+
+	irqd = irq_get_irq_data(r->start);
+	if (!irqd)
+		goto out_not_found;
+	irqd_set_trigger_type(irqd, r->flags & IORESOURCE_BITS);
+}
+```
+
+可以看到 DSDT 表中的信息将用于配置 trigger type。
+
+#### 问题解决
+修改 `sound/pci/hda/cs35l41_hda.c`，在请求中断时尊重已有的中断配置：
+```diff
+ 	irq_pol = cs35l41_gpio_config(cs35l41->regmap, hw_cfg);
+ 
+ 	if (cs35l41->irq && using_irq) {
++		struct irq_data *irq_data;
++
++		irq_data = irq_get_irq_data(cs35l41->irq);
++		if (irq_data && irqd_trigger_type_was_set(irq_data)) {
++			irq_pol = irqd_get_trigger_type(irq_data);
++			dev_info(cs35l41->dev, "Using configured IRQ Polarity: %d\n", irq_pol);
++		}
++
+ 		ret = devm_regmap_add_irq_chip(cs35l41->dev, cs35l41->regmap, cs35l41->irq,
+ 					       IRQF_ONESHOT | IRQF_SHARED | irq_pol,
+ 					       0, &cs35l41_regmap_irq_chip, &cs35l41->irq_data);
+```
+
+之后我们就可以使用 `generic_dsd_config` 完成配置了。
+
+#### 补丁文件 `sound_17aa386e_fix.patch`
+{% collapse "sound_17aa386e_fix.patch" %}
+```diff
+diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
+index d3fa6e136744..d9c7b4034684 100644
+--- a/sound/pci/hda/cs35l41_hda.c
++++ b/sound/pci/hda/cs35l41_hda.c
+@@ -10,6 +10,7 @@
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <sound/hda_codec.h>
++#include <linux/irq.h>
+ #include <sound/soc.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/spi/spi.h>
+@@ -1511,6 +1512,14 @@ static int cs35l41_hda_apply_properties(struct cs35l41_hda *cs35l41)
+ 	irq_pol = cs35l41_gpio_config(cs35l41->regmap, hw_cfg);
+ 
+ 	if (cs35l41->irq && using_irq) {
++		struct irq_data *irq_data;
++
++		irq_data = irq_get_irq_data(cs35l41->irq);
++		if (irq_data && irqd_trigger_type_was_set(irq_data)) {
++			irq_pol = irqd_get_trigger_type(irq_data);
++			dev_info(cs35l41->dev, "Using configured IRQ Polarity: %d\n", irq_pol);
++		}
++
+ 		ret = devm_regmap_add_irq_chip(cs35l41->dev, cs35l41->regmap, cs35l41->irq,
+ 					       IRQF_ONESHOT | IRQF_SHARED | irq_pol,
+ 					       0, &cs35l41_regmap_irq_chip, &cs35l41->irq_data);
+diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+index 8fb688e41414..60ad2344488b 100644
+--- a/sound/pci/hda/cs35l41_hda_property.c
++++ b/sound/pci/hda/cs35l41_hda_property.c
+@@ -109,6 +109,7 @@ static const struct cs35l41_config cs35l41_config_table[] = {
+ 	{ "10431F1F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 0, 0, 0 },
+ 	{ "10431F62", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
+ 	{ "10433A60", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
++	{ "17AA386E", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
+ 	{ "17AA386F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
+ 	{ "17AA3877", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
+ 	{ "17AA3878", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
+@@ -500,6 +501,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+ 	{ "CSC3551", "10431F1F", generic_dsd_config },
+ 	{ "CSC3551", "10431F62", generic_dsd_config },
+ 	{ "CSC3551", "10433A60", generic_dsd_config },
++	{ "CSC3551", "17AA386E", generic_dsd_config },
+ 	{ "CSC3551", "17AA386F", generic_dsd_config },
+ 	{ "CSC3551", "17AA3877", generic_dsd_config },
+ 	{ "CSC3551", "17AA3878", generic_dsd_config },
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index cdcb28aa9d7b..ac729187f6a7 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -10382,6 +10382,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x3853, "Lenovo Yoga 7 15ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
+ 	SND_PCI_QUIRK(0x17aa, 0x3855, "Legion 7 16ITHG6", ALC287_FIXUP_LEGION_16ITHG6),
+ 	SND_PCI_QUIRK(0x17aa, 0x3869, "Lenovo Yoga7 14IAL7", ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
++	SND_PCI_QUIRK(0x17aa, 0x386e, "Legion Y9000X 2022 IAH7", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x17aa, 0x386f, "Legion 7i 16IAX7", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x17aa, 0x3870, "Lenovo Yoga 7 14ARB7", ALC287_FIXUP_YOGA7_14ARB7_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x3877, "Lenovo Legion 7 Slim 16ARHA7", ALC287_FIXUP_CS35L41_I2C_2),
+```
+{% endcollapse %}
+
 ### 构建内核
 克隆 Arch Linux 内核包构建文件:
 ```bash
@@ -221,4 +349,6 @@ MAKEFLAGS="-j$(nproc)"
 又通宵了一个晚上（虽然是因为我菜，对内核不了解🥹），困死了。果然晚上不适合开始任何非劳力型的工作。
 
 {% alertbox info "正在试图将该补丁提交到 Linux Kernel 主线，相关讨论见：
-https://lore.kernel.org/lkml/TYCP286MB25352F3E995FED9CCE90F1F6C40B2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM/T/" %}
+- https://lore.kernel.org/lkml/TYCP286MB25352F3E995FED9CCE90F1F6C40B2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM/T/
+- https://lore.kernel.org/lkml/TYCP286MB253523D85F6E0ECAA3E03D58C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM/T/"
+" %}
