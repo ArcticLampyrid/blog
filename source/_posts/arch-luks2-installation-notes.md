@@ -1,7 +1,7 @@
 ---
 title: Arch Linux 安装笔记（LUKS2 + Secure Boot + TPM + PIN）
 date: 2024-03-23 18:12:00
-updated: 2024-03-31 19:35:00
+updated: 2024-04-27 09:43:00
 category: 技术
 toc: true
 ---
@@ -249,7 +249,7 @@ XMODIFIERS=@im=fcitx
 
 ## 配置自动开启 NumLock
 ### 早期环境
-参照 [[https://bbs.archlinux.org/viewtopic.php?id=283252]]
+参照 [https://bbs.archlinux.org/viewtopic.php?id=283252](https://bbs.archlinux.org/viewtopic.php?id=283252)。
 
 写入 `/usr/bin/numlock`（并给予执行权限）：
 ```bash
@@ -344,7 +344,28 @@ makepkg -si
 pacman -S nvidia-open
 ```
 
-修改 `/etc/mkinitcpio.conf`，在 HOOKS 中删除 `kms`。
+~~修改 `/etc/mkinitcpio.conf`，在 HOOKS 中删除 `kms`。~~
+
+为了保证 plymouth 的显示不出现缩放失败、字体过小等问题，需要使用 early KMS。因此，在 `/etc/mkinitcpio.conf` 的 HOOKS 中保留 `kms` ，并在 MODULES 中添加 `nvidia nvidia_modeset nvidia_uvm nvidia_drm`。  
+（参见 [ArchWiki: Kernel mode setting / mkinitcpio](https://wiki.archlinux.org/title/kernel_mode_setting#mkinitcpio) 和 [ArchWiki: NVIDIA / Early loading](https://wiki.archlinux.org/title/NVIDIA#Early_loading)）
+
+配置 pacman hook，创建如下的 `/etc/pacman.d/hooks/nvidia.hook` 文件，以在每次安装新版本驱动后自动重建 initramfs：
+```conf
+[Trigger]
+Operation=Install
+Operation=Upgrade
+Operation=Remove
+Type=Package
+Target=nvidia-open
+Target=linux
+
+[Action]
+Description=Updating NVIDIA module in initcpio
+Depends=mkinitcpio
+When=PostTransaction
+NeedsTargets
+Exec=/bin/sh -c 'while read -r trg; do case $trg in linux*) exit 0; esac; done; /usr/bin/mkinitcpio -P'
+```
 
 编辑 `/etc/kernel/cmdline`，添加内核参数：
 ```
