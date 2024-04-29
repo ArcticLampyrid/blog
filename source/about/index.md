@@ -1,35 +1,82 @@
 ---
 title: 溯源
 date: 2022-03-12 22:59:26
-updated: 2024-04-08 15:03:45
+updated: 2024-04-29 17:38:44
 ---
 #### 引
-亲爱的旅人，感谢您追寻萤火之光，来到这里。  
+亲爱的旅人，感谢您追寻萤火之光，来到这里。
+
+所谓溯源，又可作「溯缘」解。其一是在这里记述我的历史；其二是在这里述说我与世界各界的结缘。
 
 #### 关于昵称
-目前常用昵称为极地萤火——愿于最寒冷的极地之夜，用微弱的萤火为你照亮前路。​  
+目前常用昵称为极地萤火，含义大抵是「愿于最寒冷的极地之夜，用微弱的萤火为你照亮前路。」，至于是否已有能力庇护一方，那大概又是另一回事情了。​  
 在不便使用中文字符的情况下，也可以写作 alampy / ArcticLampyrid。
 
 不过日常中大家更多地称呼我为橙子，源于我曾用的经典头像 —— 一只橙子。
 
 #### 如何捕获
+您可以在以下平台找到我，欢迎与我交流、讨论、分享、合作、提问、反馈等等，即使是一些闲聊也是可以的哦~
+
 - **Telegram**：[私聊 @alampy](https://t.me/alampy) | [频道 @alampy_feed](https://t.me/alampy_feed)
 - **GitHub**：[ArcticLampyrid](https://github.com/ArcticLampyrid)
 - **邮箱**：[ArcticLampyrid@outlook.com](mailto:ArcticLampyrid@outlook.com)
 - **云村**：[极地萤火](https://music.163.com/user/home?id=1504287396)
 
-#### 属性
-- **00后**(2003)
-- **大二**(2024)，~~**高三**(2022)~~
-- **AFOIer**，超级弱
-- **开源热爱者**
-- **无国界主义者**
-- **某种意义上的时尚者**，主要表示在技术栈的激进上
-- **浪漫主义者**
-- **追求爱与自由**
-- **以解构 + 重构的方式不断认识世界**
+如果您认为我们讨论的话题较为敏感的话，也可以（at your option）使用 PGP 密钥来与我加密通信。
 
-#### 缘起
+{% collapse "我的 PGP 公钥" %}
+```
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+mDMEW3J/nhYJKwYBBAHaRw8BAQdAC0hIsVWBAEim46UXs6RAcxPH8NeTwiF1ELlK
+IfarvuW0HXFpcWl3b3JsZCA8MTM1NDA5MjU0OUBxcS5jb20+iJAEExYIADgWIQR9
+qIFcEPzauMbRHEvccqJRnnfWzwUCW3J/ngIbIwULCQgHAgYVCgkICwIEFgIDAQIe
+AQIXgAAKCRDccqJRnnfWz5LVAP4vXTURfSJQTc7ZmfNwgbwpjxoBNM8KcibDxjPe
+NsE2FgD8CfIpgpcQQEJTLazXKB+SJm0+S9Lwl7dq7oNun5+rVAy0K0FyY3RpY0xh
+bXB5cmlkIDxBcmN0aWNMYW1weXJpZEBvdXRsb29rLmNvbT6IkAQTFggAOBYhBH2o
+gVwQ/Nq4xtEcS9xyolGed9bPBQJf05vDAhsjBQsJCAcCBhUKCQgLAgQWAgMBAh4B
+AheAAAoJENxyolGed9bP8X8BANUjgv7Clfl9FiyKBBQafur/SS1aKvMw6JmrB/l4
+9jFKAQDaEt/at0/IvWNRc2rrPUpGt9O+V5tAotWZVt8U4jd2Cbg4BFtyf54SCisG
+AQQBl1UBBQEBB0BWuRqC3XNaVGxC8kgpWat7YhMt1s9WSIRqaV1LKW2hXgMBCAeI
+eAQYFggAIBYhBH2ogVwQ/Nq4xtEcS9xyolGed9bPBQJbcn+eAhsMAAoJENxyolGe
+d9bPhEEBAPx8DEZxu1CmSfvdaLkFt9/IfMXcwsfuLgFkuHsHXay7AQDIhczgFHO5
+1Joa3yKS7LMjnDy7YUcnOl4Gl4C1LVx6AA==
+=RFmP
+-----END PGP PUBLIC KEY BLOCK-----
+```
+{% endcollapse %}
+
+#### 一些属性
+是 00 后（生于 2003 年），曾经玩过一点点算法竞赛（已经 AFOIer 了），但一直是工程代码写得更多一些。  
+技术爱好者，相信开放、自由和多样化的世界，热爱开源，追求时尚技术。  
+目前就读电子信息类专业（2022 级），希望能成为软硬件兼修的全栈工程师。  
+
+大抵算是个浪漫主义者，追求爱与自由，拒绝功利束缚。  
+至今依旧在以解构 + 重构的方式不断认识世界，并在这个过程中看到了许多有趣、美好的不同事物。  
+和平主义者，无国界主义者，希望美好的事物不会被误解与冲突而破坏。  
+
+#### 写过的一些小项目
+不完全统计，仅列举部分项目，希望其中有能够帮助到您的存在。
+
+- [CeePasswordCard](https://github.com/ArcticLampyrid/CeePasswordCard)：高考动态口令卡辅助查询工具。
+- [CrucioBackupper](https://github.com/ArcticLampyrid/CrucioBackupper)：快点阅读文章（对话体小说）备份器。
+- [DictationAssistant](https://github.com/ArcticLampyrid/DictationAssistant)：一个用于辅助学习的工具，它可以利用自动化手段帮助您默写单词、短语、句子等。软件通过语音合成技术以给定的间隔、重复次数朗读指定的文本，以帮助您在传统纸张或电子设备上默写。
+- [EProjectFile](https://github.com/OpenEpl/EProjectFile)：C# 库，用于读取和写入易语言项目私有文件格式（`.e` 文件和 `.ec` 文件）。
+- [GitHub Action: Wait For Workflow](https://github.com/ArcticLampyrid/action-wait-for-workflow)：GitHub Action，用于等待指定的工作流完成，以实现跨文件的工作流依赖。
+- [Gradle Git Version](https://github.com/ArcticLampyrid/gradle-git-version)：Gradle 插件，用于根据 Git 仓库的状态生成版本号。
+- [Hexo Filter KaTex](https://github.com/ArcticLampyrid/hexo-filter-katex)：Hexo 插件，用于将 TeX 公式转换为 KaTeX 渲染的 HTML 代码，服务器端渲染（SSR）。
+- [Ippper (crate)](https://github.com/ArcticLampyrid/ippper.rs)：Rust 库，用于实现一个极其简陋的 IPP（网络打印协议） 服务端。
+- [KtJsonRpcPeer](https://github.com/ArcticLampyrid/KtJsonRpcPeer)：一个以对等（Peer）模式实现 JSON-RPC 2.0 协议的 Kotlin 库，支持全双工通信。
+- [MMKV.NET](https://github.com/ArcticLampyrid/MMKV.NET)：一个用于 .NET 平台的 MMKV 绑定库，支持 .NET Core 3.1+，可用于跨平台的高性能键值存储。
+- [NJUPT WiFi Login](https://github.com/ArcticLampyrid/njupt_wifi_login)：一个帮助 NJUPTer 方便地连接校园网络的工具。希望可以做到无感知验证。
+- [STM32Tesseract](https://github.com/ArcticLampyrid/stm32tesseract)：一款工具性程序，旨在将 STM32CubeMX 生成的代码与现代 IDE 和构建系统无缝集成，便于使用 VSCode 等现代 IDE 进行 STM32 开发，并提供（准）一键环境搭建。
+- [TextECode](https://github.com/OpenEpl/TextECode)：C# 应用，用于实现易语言项目私有文件格式和文本文件之间的转换，以便于版本管理、代码审查、自动化代码分析等。
+- [TwentyFourPoint](https://github.com/ArcticLampyrid/TwentyFourPoint)：一款用 Qt6 编写的 24 点游戏，起始于程序设计周的课程作业。
+- [UEXECUTER](https://github.com/ArcticLampyrid/uexecuter)：UEXECUTER 是一个可爱的函数调用程序，使用人类可读的字符串为指令，通过 UART 通信调用 MCU 上的函数。目前，它支持 STM32F4 系列微控制器和 ARM 硬件浮点模型（`-mfloat-abi=hard`）。
+- [WinPrint (crate)](https://github.com/ArcticLampyrid/winprint.rs)：Rust 库，用于调用 Windows API 打印文档。
+- [wsrpc](https://github.com/ArcticLampyrid/wsrpc)：一个 Golang 模块，基于 JSON-RPC 2.0 协议实现的 WebSocket RPC 框架，支持全双工通信。
+- [zhixue](https://github.com/ArcticLampyrid/zhixue)：智学网第三方 PC 客户端，方便电脑端查分。
+
+#### 那些与信息结缘的故事
 什么时候接触编程已是不可考了，大抵是在小学时期。第一次接触与编程相关的东西，还是通过一个叫 Scratch 的软件。彼时 Scratch 还是 1.x 版本，刚被引入中国，还远没有像现在遍地都是“少儿编程补习班”这么普及呢。严格来说，Scratch 其实并不算什么编程语言，只不过能通过拖拽编写一些简易脚本，以控制小猫咪和其它角色的运动罢了。不过呢，至少通过 Scratch，我把循环、条件、变量等基本概念给弄明白了。
 
 玩腻了“小猫咪”后，便开始接触 Small Basic —— 一款微软出品的、为初学者设计的玩具语言。这应该才算是我真正第一次接触命令式代码编程吧。还记得那时候，因为英语基础太烂，甚至连 `if` / `then` 这些关键字都不会读，只能硬背🥲。但不管怎么说，通过代码将幻想中的逻辑一条条投射到现实世界之中，对我有着难以抵御的诱惑力。于是在条件不利的情况，我也没有浪费太多时间，便掌握了 Small Basic 的玩法。
@@ -58,7 +105,7 @@ updated: 2024-04-08 15:03:45
 
 至今比起各位佬依旧是个蒟蒻QwQ，但我会努力的😊。
 
-#### 站点历史
+#### 小站历程
 - 2016-04-28：注册了第一个免费域名（qiqiworld.tk，已废弃），并使用 GitHub Pages + Hexo 搭建了第一个独立博客
 - 2022-03-06：新博客上线，使用域名 [alampy.com](https://alampy.com)
 - 2022-04-19：使用结构化数据标记博客文章，以便更好地被搜索引擎收录
