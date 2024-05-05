@@ -1,7 +1,7 @@
 ---
 title: 使用 DKMS 来 Patch Linux 内核模块
 date: 2024-04-19 01:45:32
-updated: 2024-04-19 01:45:32
+updated: 2024-05-05 16:03:31
 category: 技术
 toc: true
 ---
@@ -30,7 +30,12 @@ Dynamic Kernel Module Support (DKMS) 是 Dell 创建的动态内核模块支持�
 
 DRIVER_PATH=$1
 
-kernel_version=$(cat /proc/version | cut -d " " -f 3)
+if [ -z "$kernelver" ]; then
+    echo "No kernel version specified, using current kernel version"
+    kernel_version=$(cat /proc/version | cut -d " " -f 3)
+else
+    kernel_version=$kernelver
+fi
 vers=${kernel_version//-/ }
 vers=${vers//./ }
 vers=($vers)
