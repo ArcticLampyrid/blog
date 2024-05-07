@@ -1,7 +1,7 @@
 ---
 title: Arch Linux 安装笔记（LUKS2 + Secure Boot + TPM + PIN）
 date: 2024-03-23 18:12:00
-updated: 2024-04-27 09:43:00
+updated: 2024-05-07 12:33:00
 category: 技术
 toc: true
 ---
@@ -216,6 +216,26 @@ XMODIFIERS=@im=fcitx
 ```
 
 不在全局环境变量中设置 `GTK_IM_MODULE` & `QT_IM_MODULE` & `SDL_IM_MODULE`，如遇到无法支持 Wayland IME 的软件，可按需单独设置
+
+### 配置在 X11 下运行的 GTK 应用
+向 `~/.gtkrc-2.0` 写入：
+```
+gtk-im-module="fcitx"
+```
+
+向 `~/.config/gtk-3.0/settings.ini` 写入：
+```
+[Settings]
+gtk-im-module=fcitx
+```
+
+向 `~/.config/gtk-4.0/settings.ini` 写入：
+```
+[Settings]
+gtk-im-module=fcitx
+```
+
+这些配置不会被 Wayland 下运行的 GTK 应用读取，可以保证 Wayland 应用使用 `text-input-v3` 的同时，X11 应用使用 `fcitx5`。
 
 ### 配置输入法
 进入 KDE 的虚拟键盘设置，选择 `fcitx5`
