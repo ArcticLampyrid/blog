@@ -1,7 +1,7 @@
 ---
 title: 测试“六度分隔理论”在开往中的表现
 date: 2024-05-02 18:23:05
-updated: 2024-05-02 18:23:05
+updated: 2024-05-12 01:05:05
 category: 技术
 excerpt: 你听说过“六度分隔理论”吗？六度分隔理论是一个观点，认为所有人之间通过不超过六层的社交联系就可以相互联系。因此，可以通过一系列的“朋友的朋友”的声明来连接任何两个人，最多不超过六步。
 ---
@@ -33,15 +33,16 @@ excerpt: 你听说过“六度分隔理论”吗？六度分隔理论是一个�
 注意到，A 被自身可达，因此我们需要将可达节点数量减去 1，得到“真”可达节点数量。
 
 ## 代码实现
-参见 [GitHub: ArcticLampyrid/travellings-graph](https://github.com/ArcticLampyrid/travellings-graph) （MIT License）
+参见 [GitHub: ArcticLampyrid/travellings-graph](https://github.com/ArcticLampyrid/travellings-graph) \(MIT License\)  
+另有一个简易的网页前端展示，参见 [GitHub: ArcticLampyrid/travellings-graph-frontend](https://github.com/ArcticLampyrid/travellings-graph-frontend) \(MIT License\)
 
 代码仅供参考，可能存在错误或不完善之处，欢迎 Issue 和 PR。
 
 ## 结果分析
-使用 2024 年 5 月 2 日爬取到的数据，我们得到了如下结果：
+使用 2024 年 5 月 10 日爬取到的数据，我们得到了如下结果：
 {% alertbox warning "请注意，数据可能已过时，结果可能与最新的不同。" %}
 
-附件下载：{% asset_link "data-20240502.zip" %}
+附件下载：{% asset_link "data-20240510.zip" %}
 
 {% collapse "数据分析结果（节选）" %}
 > - 颢天主页 is connected by 0 nodes, avg. distance 0.00
@@ -78,6 +79,9 @@ excerpt: 你听说过“六度分隔理论”吗？六度分隔理论是一个�
 > - CHI's blog is connected by 324 nodes, avg. distance 6.85
 > - K'Blog is connected by 323 nodes, avg. distance 6.76
 > - Sorryfu is connected by 324 nodes, avg. distance 6.76
+> 
+> (Date: 2024-05-02)
+
 {% endcollapse %}
 
 可以看到，开往成员的友链状态主要分为两大类，一些网站基本属于孤岛状态（这其中有部分是因为爬取失败或博主没有设置友链界面导致的），而另一类网站则几乎都能通过不超过 6 步的友链关系连接到任何一个网站（就像“六度分隔理论”描述的那样）。
