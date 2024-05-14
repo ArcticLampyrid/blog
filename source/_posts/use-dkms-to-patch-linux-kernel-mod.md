@@ -4,6 +4,8 @@ date: 2024-04-19 01:45:32
 updated: 2024-05-05 16:03:31
 category: 技术
 toc: true
+tags:
+- Linux
 ---
 ## 缘起
 为了便于调教某些代码，前阵子咱投入了 [Arch Linux 娘](https://zh.moegirl.org.cn/Arch_Linux%E5%A8%98) 的怀抱。然而非常遗憾的是，Legion Y9000X 2022 IAH7 的扬声器拒绝了来自 Linux 的爱意。
