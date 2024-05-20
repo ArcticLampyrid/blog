@@ -1,7 +1,7 @@
 ---
 title: 为 Linux QQ 提供固定 MAC 地址以解决自动登录问题
 date: 2024-05-15 00:38:00
-updated: 2024-05-15 00:38:00
+updated: 2024-05-20 18:58:00
 category: 技术
 toc: true
 tags:
@@ -35,6 +35,9 @@ Linux QQ 的设备码识别机制中包含了本地所有网卡的 MAC 地址，
 
 ### 支持快捷登陆
 QQ 通过在 `localhost` 上监听一个端口来实现快捷登陆，但这个端口也会被隔离在命名空间之外。为此，我们需要在启动 QQ 时将这个端口映射到命名空间之外。注意 QQ 本身会拒绝非 `localhost` 的请求，所以我们需要在命名空间内使用 `socat` 来转发请求，再在命名空间外通过 `slirp4netns` 的 API 跨命名空间转发请求。
+
+### 转发 `xdg-open`
+QQ 通过调用 `xdg-open` 来打开链接，但 `xdg-open` 也会在我们的 network namespace 中运行，导致最后打开的浏览器等应用无法正确连接位于 localhost 的代理服务。为此，我们需要将 `xdg-open` 的调用转发到命名空间外。（2024-05-20 新增）
 
 ## 实现
 ### 安装依赖
@@ -78,9 +81,15 @@ if [ -z "$(which linuxqq)" ]; then
     exit 1
 fi
 
-# Make sure sub-processes are killed when the script exits
-trap 'kill $(jobs -p)' EXIT
+if [ $(basename "$0") = "xdg-open" ]; then
+    echo "$1" | socat - UNIX-CONNECT:$XDG_OPEN_SOCKET
+    exit
+fi
 
+# Make sure sub-processes are killed when the script exits
+trap 'kill $(jobs -p) 2>/dev/null' EXIT
+# Get the real path of the script
+SCRIPT=$(realpath -s "$0")
 if [ "$1" = "inside" ]; then
     echo $$ >"$2"
     # wait for the file to be deleted
@@ -104,6 +113,7 @@ elif [ "$1" = "mount" ]; then
     echo "nameserver 10.0.2.3" >$ETC_UPPER/resolv.conf
     mount --rbind /etc $ETC_LOWER
     mount -t overlay overlay -o lowerdir=$ETC_UPPER:$ETC_LOWER /etc
+    mount --bind $SCRIPT /usr/bin/xdg-open
 else
     # read the mac address from ~/.qq_mac, if not exist, generate a random one
     if [ -f ~/.qq_mac ]; then
@@ -113,9 +123,9 @@ else
         echo $qq_mac >~/.qq_mac
     fi
 
-    SCRIPT=$(realpath -s "$0")
     INFO_DIR=$(mktemp -d)
     INFO_FILE=$INFO_DIR/info
+    export XDG_OPEN_SOCKET=$INFO_DIR/xdg-open.sock
     unshare --user --map-user=$(id -u) --map-group=$(id -g) --map-users=auto --map-groups=auto --keep-caps --setgroups allow --net --mount bash "$SCRIPT" inside $INFO_FILE &
     if [ $? -ne 0 ]; then
         rm $INFO_FILE
@@ -156,10 +166,14 @@ else
     http_ports=(4310 4308 4306 4304 4302)
     add_hostfwd "tcp" 94301 "${https_ports[@]}"
     add_hostfwd "tcp" 94310 "${http_ports[@]}"
+    socat UNIX-LISTEN:$XDG_OPEN_SOCKET,fork EXEC:"xargs -d '\n' -n 1 xdg-open",pty,stderr &
+    XDG_OPEN_SOCKET_PID=$!
     rm $INFO_FILE
     tail --pid=$PID -f /dev/null
     kill -TERM $SLIRP_PID
     wait $SLIRP_PID
+    kill -TERM $XDG_OPEN_SOCKET_PID
+    wait $XDG_OPEN_SOCKET_PID
     rm -rf ${INFO_DIR:?}
     exit 0
 fi
