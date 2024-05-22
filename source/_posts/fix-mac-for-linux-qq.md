@@ -1,7 +1,7 @@
 ---
 title: 为 Linux QQ 提供固定 MAC 地址以解决自动登录问题
 date: 2024-05-15 00:38:00
-updated: 2024-05-20 18:58:00
+updated: 2024-05-22 22:17:00
 category: 技术
 toc: true
 tags:
@@ -53,6 +53,13 @@ paru -S linuxqq
 ```
 
 ### 编写启动脚本
+> #### ChangeLog
+> ##### 2024-05-20
+> - 把 xdg-open 转发到命名空间之外，以避免打开的浏览器跑在命名空间里面而无法连接位于 localhost 的 proxy
+> ##### 2024-05-22
+> - 修复在某些性能太好的机器上，可能会在 `slirp4netns` 未初始化好时尝试进行端口映射的问题 （感谢 [Kirikaze Chiyuki](https://chyk.ink/)）
+> - 部分格式调整
+
 ```bash
 #!/usr/bin/env bash
 
@@ -93,7 +100,7 @@ SCRIPT=$(realpath -s "$0")
 if [ "$1" = "inside" ]; then
     echo $$ >"$2"
     # wait for the file to be deleted
-    while [ -f $2 ]; do
+    while [ -f "$2" ]; do
         sleep 0.01
     done
     # clear proxy settings
@@ -128,7 +135,7 @@ else
     export XDG_OPEN_SOCKET=$INFO_DIR/xdg-open.sock
     unshare --user --map-user=$(id -u) --map-group=$(id -g) --map-users=auto --map-groups=auto --keep-caps --setgroups allow --net --mount bash "$SCRIPT" inside $INFO_FILE &
     if [ $? -ne 0 ]; then
-        rm $INFO_FILE
+        rm -rf "${INFO_DIR:?}"
         echo "unshare failed"
         exit 1
     fi
@@ -140,10 +147,14 @@ else
     SLIRP_API_SOCKET=$INFO_DIR/slirp.sock
     slirp4netns --configure --mtu=65520 --disable-host-loopback --enable-ipv6 $PID eth0 --macaddress $qq_mac --api-socket $SLIRP_API_SOCKET &
     SLIRP_PID=$!
+    # wait for the socket to be created, thanks for the fix from [Kirikaze Chiyuki](https://chyk.ink/)
+    while [ ! -S "$SLIRP_API_SOCKET" ]; do
+        sleep 0.01
+    done
     if [ $? -ne 0 ]; then
         echo "slirp4netns failed"
         kill $PID
-        rm -rf ${INFO_DIR:?}
+        rm -rf "${INFO_DIR:?}"
         exit 1
     fi
     nsenter -U -m --target $PID bash "$SCRIPT" mount
@@ -168,13 +179,13 @@ else
     add_hostfwd "tcp" 94310 "${http_ports[@]}"
     socat UNIX-LISTEN:$XDG_OPEN_SOCKET,fork EXEC:"xargs -d '\n' -n 1 xdg-open",pty,stderr &
     XDG_OPEN_SOCKET_PID=$!
-    rm $INFO_FILE
+    rm "$INFO_FILE"
     tail --pid=$PID -f /dev/null
     kill -TERM $SLIRP_PID
     wait $SLIRP_PID
     kill -TERM $XDG_OPEN_SOCKET_PID
     wait $XDG_OPEN_SOCKET_PID
-    rm -rf ${INFO_DIR:?}
+    rm -rf "${INFO_DIR:?}"
     exit 0
 fi
 ```
