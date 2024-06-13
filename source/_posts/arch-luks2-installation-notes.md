@@ -404,6 +404,27 @@ mkinitcpio -P
 pacman -S sof-firmware
 ```
 
+## 添加 Swap 文件
+为了支持休眠及大内存负载应用，我们需要一个 swap 文件。为方便管理、设置快照逻辑，我们将 swap 文件放在单独的子卷中，并挂载到 `/swap`。
+
+首先，运行：
+```bash
+mkdir -p /mnt
+mount /dev/mapper/system /mnt
+btrfs sub create /mnt/@swap
+umount /mnt
+mkdir -p /swap
+mount -o compress=no,space_cache,ssd,discard=async,subvol=@swap /dev/mapper/system /swap
+btrfs filesystem mkswapfile --size 48g --uuid clear /swap/swapfile
+swapon /swap/swapfile
+```
+
+编辑 `/etc/fstab`，添加：
+```
+UUID={your-uuid} /swap btrfs compress=no,space_cache,ssd,discard=async,subvol=/@swap 0 0
+/swap/swapfile none swap defaults 0 0
+```
+
 ## 蓝牙配对
 为了使得蓝牙设备在双系统下同时可用，需要提取配对过程中产生的临时密钥并写入到另一系统，请参照：[Bluetooth: Dual boot pairing](https://wiki.archlinux.org/title/Bluetooth#Dual_boot_pairing)
 
