@@ -1,7 +1,7 @@
 ---
 title: 为 Linux QQ 提供固定 MAC 地址以解决自动登录问题
 date: 2024-05-15 00:38:00
-updated: 2024-05-22 22:17:00
+updated: 2024-06-15 13:45:00
 category: 技术
 toc: true
 tags:
@@ -51,6 +51,18 @@ pacman -S slirp4netns socat util-linux
 ```bash
 paru -S linuxqq
 ```
+
+### 配置 SubUID 和 SubGID
+我们需要为当前用户配置 SubUID 和 SubGID，提供用于映射 UID 和 GID 的 ID 空间。
+
+查看 `/etc/subuid` 和 `/etc/subgid` 文件，确保当前用户在这两个文件中有对应的配置。
+
+如果没有，可以使用 `usermod` 命令来添加：
+```bash
+usermod --add-subuids 100000-165536 --add-subgids 100000-165536 $USER
+```
+
+（感谢 @aleck099 提醒）
 
 ### 编写启动脚本
 > #### ChangeLog
