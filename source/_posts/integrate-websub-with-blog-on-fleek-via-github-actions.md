@@ -25,7 +25,7 @@ toc: true
 
 ## 使用 GitHub Actions 为 Fleek 的部署提供通知
 本站使用了支持 IPFS 部署的 [Fleek](https://fleek.co/) 作为静态页面托管商
-{% alertbox info "ps: 本站域名解析部署了 [DNSLink](https://dnslink.io/)，支持通过 IPFS 访问哦。在安装了 IPFS Companion 插件的浏览器，会自动通过 IPFS 网关获取本站数据哦" %}
+{% alertbar info "ps: 本站域名解析部署了 [DNSLink](https://dnslink.io/)，支持通过 IPFS 访问哦。在安装了 IPFS Companion 插件的浏览器，会自动通过 IPFS 网关获取本站数据哦" %}
 
 截止到 2022-06-25，[Fleek](https://fleek.co/) 并没有提供原生的 WebHook，我们无法直接利用其通知
 但 Fleek 关联 GitHub 仓库后会自动产生 check 信息（即 GitHub 上的那个小勾），我们可以利用这一点，将 GitHub Actions 的触发条件设置为 check run completed 来变现实现部署完成的通知，以便通知 Hub

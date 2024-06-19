@@ -419,7 +419,7 @@ MAKEFLAGS="-j$(nproc)"
 ## 另记
 又通宵了一个晚上（虽然是因为我菜，对内核不了解🥹），困死了。果然晚上不适合开始任何非劳力型的工作。
 
-{% alertbox info "正在试图将该补丁提交到 Linux Kernel 主线，相关讨论见：
+{% alertbar info "正在试图将该补丁提交到 Linux Kernel 主线，相关讨论见：
 - https://lore.kernel.org/lkml/TYCP286MB25352F3E995FED9CCE90F1F6C40B2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM/T/
 - https://lore.kernel.org/lkml/TYCP286MB253523D85F6E0ECAA3E03D58C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM/T/
 - https://lore.kernel.org/lkml/TYCP286MB25357A4599E935F26A8AAB24C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM/T/"

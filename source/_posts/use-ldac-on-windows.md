@@ -13,4 +13,4 @@ LDAC 是一种由索尼开发的蓝牙音频编解码器，它支持高达 990 k
    {% asset_img install-a2dp-driver.png %}
 3. 调整编解码器参数，设置编解码器类型为 LDAC，并根据实际情况调整编码质量。
 
-{% alertbox info "注意：Alternative A2DP Driver 为付费软件，授权费用为 5.99 USD，可以通过 PayPal 购买。" %}
+{% alertbar info "注意：Alternative A2DP Driver 为付费软件，授权费用为 5.99 USD，可以通过 PayPal 购买。" %}
