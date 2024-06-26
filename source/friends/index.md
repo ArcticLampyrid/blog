@@ -4,8 +4,7 @@ date: 2022-03-12 22:59:34
 updated: 2022-07-06 23:48:40
 comments: true
 ---
-{% linklist random friends %}
-{% endlinklist %}
+{% linklist friends random %}
 
 #### 申请友联
 请加 QQ 1354092549 并发送您的网站信息，格式如下：
