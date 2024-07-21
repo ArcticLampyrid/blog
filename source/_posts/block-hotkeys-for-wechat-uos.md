@@ -1,7 +1,7 @@
 ---
 title: 禁用 WeChat UOS 的快捷键
 date: 2024-07-15 02:37:00
-updated: 2024-07-15 02:37:00
+updated: 2024-07-21 14:45:00
 category: 技术
 tags: [Linux]
 ---
@@ -141,8 +141,10 @@ cmake --build build
 LD_PRELOAD=/path/to/hotkey_blocker.so /path/to/wechat-uos
 ```
 
-## 与 AUR `wechat-uos-bwrap` 包共同使用
-如果您和咱一样正在使用 Arch Linux 的 [`wechat-uos-bwrap` 包](https://aur.archlinux.org/packages/wechat-uos-bwrap)来隔离运行 WeChat UOS ，那么您可以通过以下方法集成上述共享库：
+## 与 AUR `wechat-uos-qt` 包共同使用
+{% alertbar warning "更新：方案已被 AUR 维护者采纳，直接安装 [`wechat-key-block`](https://aur.archlinux.org/packages/wechat-key-block) 即可" %}
+
+如果您和咱一样正在使用 Arch Linux 的 [`wechat-uos-qt` 包](https://aur.archlinux.org/packages/wechat-uos-qt)来隔离运行 WeChat UOS ，那么您可以通过以下方法集成上述共享库：
 1. 把 `hotkey_blocker.so` 文件放到 `/home/YOUR_USERNAME/.local/share/WeChat_Data/` 目录下。
 2. 修改同目录下的 `wechat.env` 文件，添加以下内容：
    ```ini
