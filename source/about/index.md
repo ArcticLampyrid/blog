@@ -112,3 +112,4 @@ d9bPhEEBAPx8DEZxu1CmSfvdaLkFt9/IfMXcwsfuLgFkuHsHXay7AQDIhczgFHO5
 - 2022-06-25：Atom 订阅支持 WebSub 协议，以便更快地推送更新
 - 2024-02-19：加入[开往](https://www.travellings.cn/)
 - 2024-03-27：加入[萌备](https://icp.gov.moe/?keyword=20240550)
+- 2024-07-27：使用 [Shiki](https://shiki.style/) 语法高亮库
