@@ -224,6 +224,7 @@ visit_count:
 ################## 额外的注入代码 ##################
 additional_injections:
   head: |
+    <link rel="stylesheet" id="kratos-css" href="/css/shiki.css" media="all">
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "999960a09fd44d63bc39abfe9a0e55a5"}'></script>
   footer: ""
   after_footer: ""
