@@ -51,8 +51,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
       hexo-shiki-highlighter:
-        specifier: ^0.0.1
-        version: 0.0.1(hexo@7.3.0(chokidar@3.6.0))
+        specifier: ^0.1.0
+        version: 0.1.0(hexo@7.3.0(chokidar@3.6.0))
 
 packages:
 
@@ -243,8 +243,8 @@ packages:
       supports-color:
         optional: true
 
-  debug@4.3.5:
-    resolution: {integrity: sha512-pt0bNEmneDIvdL1Xsd9oDQ/wrQRkXDT4AUWlNZNPKvW5x/jyO9VFXkJUP07vQ2upmw5PlaITaPKc31jK13V+jg==}
+  debug@4.3.6:
+    resolution: {integrity: sha512-O/09Bd4Z1fBrU4VzkhFqVgpPzaGbw6Sm9FEkBT1A/YBXQFGuuSxa1dN2nxgxS34JmKXqYx8CZAwEVoJFImUXIg==}
     engines: {node: '>=6.0'}
     peerDependencies:
       supports-color: '*'
@@ -489,8 +489,8 @@ packages:
     resolution: {integrity: sha512-u4s0ty9Aew6jV+a9oMrXBwhrRpUQ0U8PWM/88a5aHgDru58VY81mVrxOFxs788NAsWQ8OvsJtF5m7mnXoRnSIA==}
     engines: {node: '>=12.13.0'}
 
-  hexo-shiki-highlighter@0.0.1:
-    resolution: {integrity: sha512-QiqDxVdYKkz9duy6T+nwjtF05RCBEgTKdHhoZSDv+FO4DXfkiT9s+ku9t37SIoZXkl801pYcQDi+dLRh5VNxDg==}
+  hexo-shiki-highlighter@0.1.0:
+    resolution: {integrity: sha512-oMxR56DDvPnhvskLQJvEyEDqiO1uOcdtcbZHVbHDEFmYap/EqtTrgSt/YS5d0eZhHY1ImaCJKe+DuMgOV6ynfQ==}
     peerDependencies:
       hexo: ^7.0.0
 
@@ -962,8 +962,8 @@ packages:
   tslib@2.6.3:
     resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
 
-  uglify-js@3.19.0:
-    resolution: {integrity: sha512-wNKHUY2hYYkf6oSFfhwwiHo4WCHzHmzcXsqXYTN9ja3iApYIFbb2U6ics9hBcYLHcYGQoAlwnZlTrf3oF+BL/Q==}
+  uglify-js@3.19.1:
+    resolution: {integrity: sha512-y/2wiW+ceTYR2TSSptAhfnEtpLaQ4Ups5zrjB2d3kuVxHj16j/QJwPl5PvuGy9uARb39J0+iKxcRPvtpsx4A4A==}
     engines: {node: '>=0.8.0'}
     hasBin: true
 
@@ -1081,7 +1081,7 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.3.5
+      debug: 4.3.6
     transitivePeerDependencies:
       - supports-color
 
@@ -1235,7 +1235,7 @@ snapshots:
     dependencies:
       ms: 2.0.0
 
-  debug@4.3.5:
+  debug@4.3.6:
     dependencies:
       ms: 2.1.2
 
@@ -1500,7 +1500,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  hexo-shiki-highlighter@0.0.1(hexo@7.3.0(chokidar@3.6.0)):
+  hexo-shiki-highlighter@0.1.0(hexo@7.3.0(chokidar@3.6.0)):
     dependencies:
       hexo: 7.3.0(chokidar@3.6.0)
 
@@ -1568,7 +1568,7 @@ snapshots:
       he: 1.2.0
       param-case: 2.1.1
       relateurl: 0.2.7
-      uglify-js: 3.19.0
+      uglify-js: 3.19.1
 
   html-to-text@9.0.5:
     dependencies:
@@ -1611,14 +1611,14 @@ snapshots:
     dependencies:
       '@tootallnate/once': 2.0.0
       agent-base: 6.0.2
-      debug: 4.3.5
+      debug: 4.3.6
     transitivePeerDependencies:
       - supports-color
 
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.5
+      debug: 4.3.6
     transitivePeerDependencies:
       - supports-color
 
@@ -1979,7 +1979,7 @@ snapshots:
   stylus@0.62.0:
     dependencies:
       '@adobe/css-tools': 4.3.3
-      debug: 4.3.5
+      debug: 4.3.6
       glob: 7.2.3
       sax: 1.3.0
       source-map: 0.7.4
@@ -2023,7 +2023,7 @@ snapshots:
 
   tslib@2.6.3: {}
 
-  uglify-js@3.19.0: {}
+  uglify-js@3.19.1: {}
 
   universalify@0.2.0: {}
 
