@@ -1,7 +1,7 @@
 ---
 title: Arch Linux 安装笔记（LUKS2 + Secure Boot + TPM + PIN）
 date: 2024-03-23 18:12:00
-updated: 2024-05-07 12:33:00
+updated: 2024-08-06 23:58:00
 category: 技术
 toc: true
 tags:
@@ -61,17 +61,17 @@ reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\TimeZoneInformation
    ```bash
    mkfs.btrfs --label system /dev/mapper/system
    mount /dev/mapper/system /mnt
-   btrfs subvolume create /mnt/@root
+   btrfs subvolume create /mnt/@
    btrfs subvolume create /mnt/@home
-   btrfs subvolume create /mnt/@var
+   btrfs subvolume create /mnt/@var_log
    umount -R /mnt
    ```
 10. 挂载文件系统：
     ```bash
     umount -R /mnt
-    mount --mkdir -o noatime,subvol=@root /dev/mapper/system /mnt
+    mount --mkdir -o noatime,subvol=@ /dev/mapper/system /mnt
     mount --mkdir -o noatime,subvol=@home /dev/mapper/system /mnt/home
-    mount --mkdir -o noatime,subvol=@var /dev/mapper/system /mnt/var
+    mount --mkdir -o noatime,subvol=@var_log /dev/mapper/system /mnt/var/log
     mount --mkdir /dev/nvme1n1p4 /mnt/efi
     ```
 11. 安装基本系统：
@@ -120,7 +120,7 @@ reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\TimeZoneInformation
 20. 查看磁盘分区永久名称：执行 `ls -l /dev/disk/by-uuid/` 找到连接到 `/dev/nvme1n1p5` 的 UUID。
 20. 配置内核参数 `/etc/kernel/cmdline`：
     ```
-    fbcon=nodefer rw rd.luks.allow-discards cryptdevice=/dev/disk/by-uuid/YOUR_DEVICE_UUID:system bgrt_disable root=LABEL=system rootflags=subvol=@root,rw splash vt.global_cursor_default=0
+    fbcon=nodefer rw rd.luks.allow-discards cryptdevice=/dev/disk/by-uuid/YOUR_DEVICE_UUID:system bgrt_disable root=LABEL=system rootflags=subvol=@,rw splash vt.global_cursor_default=0
     ```
 21. 配置启动时解密 `/etc/crypttab.initramfs`：
     ```
@@ -131,24 +131,28 @@ reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\TimeZoneInformation
     KEYMAP=us
     FONT=ter-132b
     ```
-23. 通过 sbctl 创建自定义签名并生成 UKI（统一内核映像）：
+23. 通过 sbctl 创建自定义签名：
     ```bash
     sbctl create-keys
-    sbctl bundle -i /boot/intel-ucode.img -s /efi/main.efi
+    ```
+24. 使用 mkinitcpio 生成 UKI（统一内核映像）：
+    修改 `/etc/mkinitcpio.d/linux.preset`，注释掉 `default_config` 和 `fallback_config`，取消注释 `default_uki` 和 `fallback_uki`，然后执行：
+    ```bash
+    mkdir -P /efi/EFI/Linux
     mkinitcpio -P
     ```
-24. 添加 EFI 引导项：
+26. 添加 EFI 引导项：
     ```bash
-    efibootmgr --disk /dev/nvme1n1 --part 4 --create  --label "Arch Linux" --loader main.efi
+    efibootmgr --disk /dev/nvme1n1 --part 4 --create  --label "Arch Linux" --loader /efi/EFI/Linux/arch-linux.efi
     ```
-25. 退出 chroot 环境：
+27. 退出 chroot 环境：
     ```bash
     exit
     umount -R /mnt
     reboot
     ```
 ## 配置网络
-```
+```bash
 systemctl enable NetworkManager
 systemctl start NetworkManager
 ```
@@ -226,13 +230,13 @@ gtk-im-module="fcitx"
 ```
 
 向 `~/.config/gtk-3.0/settings.ini` 写入：
-```
+```ini
 [Settings]
 gtk-im-module=fcitx
 ```
 
 向 `~/.config/gtk-4.0/settings.ini` 写入：
-```
+```ini
 [Settings]
 gtk-im-module=fcitx
 ```
@@ -248,7 +252,7 @@ gtk-im-module=fcitx
 --ozone-platform-hint=auto --enable-wayland-ime
 ```
 
-对于 Electron 应用，可配置以下全局设定：
+对于 Electron 应用，可做如下设定：
 - 写入到 `~/.config/electron25-flags.conf`：
   ```
   --enable-features=WaylandWindowDecorations
@@ -271,8 +275,6 @@ gtk-im-module=fcitx
 
 ## 配置自动开启 NumLock
 ### 早期环境
-参照 [https://bbs.archlinux.org/viewtopic.php?id=283252](https://bbs.archlinux.org/viewtopic.php?id=283252)。
-
 写入 `/usr/bin/numlock`（并给予执行权限）：
 ```bash
 #!/bin/bash
@@ -322,7 +324,7 @@ mkinitcpio -P
 
 ### SDDM 环境
 编辑 `/etc/sddm.conf`，加入：
-```
+```ini
 [General]
 Numlock=on
 ```
@@ -341,7 +343,7 @@ pacman -S plymouth
 
 
 修改 `/etc/plymouth/plymouthd.conf` 配置高分屏缩放：
-```
+```ini
 [Daemon]
 DeviceScale=2
 ```
@@ -366,13 +368,14 @@ makepkg -si
 pacman -S nvidia-open
 ```
 
-~~修改 `/etc/mkinitcpio.conf`，在 HOOKS 中删除 `kms`。~~
+修改 `/etc/mkinitcpio.conf`，在 HOOKS 中删除 `kms`。
 
-为了保证 plymouth 的显示不出现缩放失败、字体过小等问题，需要使用 early KMS。因此，在 `/etc/mkinitcpio.conf` 的 HOOKS 中保留 `kms` ，并在 MODULES 中添加 `nvidia nvidia_modeset nvidia_uvm nvidia_drm`。  
-（参见 [ArchWiki: Kernel mode setting / mkinitcpio](https://wiki.archlinux.org/title/kernel_mode_setting#mkinitcpio) 和 [ArchWiki: NVIDIA / Early loading](https://wiki.archlinux.org/title/NVIDIA#Early_loading)）
+{% collapse "另一配置方法：启用 early KMS（对于双显卡用户，此种配置易导致 bug，故博主不使用）" %}
+
+为了保证 plymouth 的显示不出现缩放失败、字体过小等问题，需要使用 early KMS。因此，在 `/etc/mkinitcpio.conf` 的 HOOKS 中保留 `kms` ，并在 MODULES 中添加 `nvidia nvidia_modeset nvidia_uvm nvidia_drm`。（
 
 配置 pacman hook，创建如下的 `/etc/pacman.d/hooks/nvidia.hook` 文件，以在每次安装新版本驱动后自动重建 initramfs：
-```conf
+```ini
 [Trigger]
 Operation=Install
 Operation=Upgrade
@@ -388,6 +391,7 @@ When=PostTransaction
 NeedsTargets
 Exec=/bin/sh -c 'while read -r trg; do case $trg in linux*) exit 0; esac; done; /usr/bin/mkinitcpio -P'
 ```
+{% endcollapse %}
 
 编辑 `/etc/kernel/cmdline`，添加内核参数：
 ```
@@ -442,12 +446,15 @@ systemctl enable bluetooth
 systemctl restart bluetooth
 ```
 
-备注：
-如果发现蓝牙无法在开机时被自动启用，请检查 `~/.config/bluedevilglobalrc` 文件（参见 [KDE plasma: Bluetooth not automatically powered on at login, try this](https://www.reddit.com/r/ManjaroLinux/comments/12fgj3o/kde_plasma_bluetooth_not_automatically_powered_on/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)）
+{% alertpanel "info" "备注" %}
+~~如果发现蓝牙无法在开机时被自动启用，请检查 `~/.config/bluedevilglobalrc` 文件（参见 [KDE plasma: Bluetooth not automatically powered on at login, try this](https://www.reddit.com/r/ManjaroLinux/comments/12fgj3o/kde_plasma_bluetooth_not_automatically_powered_on/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)）~~
+
+有关蓝牙无法在开机时被自动启用的问题，已提交解决方案（[MR #165](https://invent.kde.org/plasma/bluedevil/-/merge_requests/165)）并被合并到 KDE 6.0.5 及以上版本，故不再需要此 trick。
+{% endalertpanel %}
 
 
 ## 指纹识别
-安装 `fprintd` 和 `libfprint`，由于本人使用的是 FPC 传感器，`libfprint` 原版还不支持，故从 AUR 安装 `libfprint-fpcmoh-git`：
+安装 `fprintd` 和 `libfprint`，由于本人使用的是 FPC 传感器，`libfprint` 原版还不支持，故从 AUR 安装 `libfprint-fpcmoh-git`（安全警告：这将引入闭源的专有组件）：
 ```bash
 paru -S libfprint-fpcmoh-git
 pacman -S fprintd
@@ -485,3 +492,13 @@ Session=plasma.desktop
 pacman -S fish
 chsh $(which fish)
 ```
+
+## 参考资料
+- [LUKS2 YubiKey 全盘加密手稿 by 北雁云依](https://blog.yunyi.beiyan.us/posts/luksNote/)
+- [ArchWiki: Installation guide](https://wiki.archlinux.org/title/Installation_guide)
+- [ArchWiki: Unified kernel image](https://wiki.archlinux.org/title/Unified_kernel_image)
+- [ArchWiki: Snapper](https://wiki.archlinux.org/title/Snapper)
+- [\[SOLVED\] Numlock not activating during boot time (systemd-boot)](https://bbs.archlinux.org/viewtopic.php?id=283252)
+- [ArchWiki: Kernel mode setting / mkinitcpio](https://wiki.archlinux.org/title/kernel_mode_setting#mkinitcpio)
+- [ArchWiki: NVIDIA / Early loading](https://wiki.archlinux.org/title/NVIDIA#Early_loading)
+- [Using Fcitx 5 on Wayland](https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland)
