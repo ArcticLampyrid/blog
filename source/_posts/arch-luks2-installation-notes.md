@@ -1,7 +1,7 @@
 ---
 title: Arch Linux 安装笔记（LUKS2 + Secure Boot + TPM + PIN）
 date: 2024-03-23 18:12:00
-updated: 2024-08-06 23:58:00
+updated: 2024-08-28 23:44:00
 category: 技术
 toc: true
 tags:
@@ -143,7 +143,7 @@ reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\TimeZoneInformation
     ```
 26. 添加 EFI 引导项：
     ```bash
-    efibootmgr --disk /dev/nvme1n1 --part 4 --create  --label "Arch Linux" --loader /efi/EFI/Linux/arch-linux.efi
+    efibootmgr --disk /dev/nvme1n1 --part 4 --create  --label "Arch Linux" --loader "\EFI\Linux\arch-linux.efi"
     ```
 27. 退出 chroot 环境：
     ```bash
