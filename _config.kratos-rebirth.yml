@@ -78,7 +78,7 @@ inactive_notice:
   enable: false
 
 syntax_highlighter:
-   theme: night-eighties
+  theme: null
 
 sidebar:
   widgets:
