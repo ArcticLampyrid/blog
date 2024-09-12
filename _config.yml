@@ -20,6 +20,8 @@ feed:
   type: atom
   path: atom.xml
   hub: https://pubsubhubbub.appspot.com
+  template:
+    - ./source/_atom.njk
 
 sitemap:
     path: sitemap.xml
