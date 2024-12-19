@@ -1,7 +1,7 @@
 ---
 title: Arch Linux 安装笔记（LUKS2 + Secure Boot + TPM + PIN）
 date: 2024-03-23 18:12:00
-updated: 2024-08-28 23:44:00
+updated: 2024-12-20 04:20:00
 category: 技术
 toc: true
 tags:
@@ -57,16 +57,25 @@ reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\TimeZoneInformation
    cryptsetup luksFormat /dev/nvme1n1p5
    cryptsetup open /dev/nvme1n1p5 system
    ```
-9. 建立 btrfs 及子卷：
+8. 本文使用的子卷布局如下：
+   | 子卷 | 挂载点 | 用途 | 
+   | ---- | ------ | ---- |
+   | @ | / | 根目录 |
+   | @home | /home | 用户数据 |
+   | @var_log | /var/log | 日志文件 |
+   | @swap | /swap | 交换文件（后面再创建） |
+
+   这样可以使得系统和用户数据分离，允许您将 `@` 恢复到以前的快照，同时保持 `/home` 不变。同时便于为系统和用户数据设置不同的快照策略。
+   
+   我们先建立除交换子卷以外的 btrfs 及子卷：
    ```bash
    mkfs.btrfs --label system /dev/mapper/system
    mount /dev/mapper/system /mnt
    btrfs subvolume create /mnt/@
    btrfs subvolume create /mnt/@home
    btrfs subvolume create /mnt/@var_log
-   umount -R /mnt
    ```
-10. 挂载文件系统：
+9.  挂载文件系统：
     ```bash
     umount -R /mnt
     mount --mkdir -o noatime,subvol=@ /dev/mapper/system /mnt
@@ -74,28 +83,28 @@ reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\TimeZoneInformation
     mount --mkdir -o noatime,subvol=@var_log /dev/mapper/system /mnt/var/log
     mount --mkdir /dev/nvme1n1p4 /mnt/efi
     ```
-11. 安装基本系统：
+10. 安装基本系统：
     ```bash
     pacstrap -K /mnt base linux linux-firmware intel-ucode btrfs-progs
     ```
     如果为 AMD 系列 CPU，可将 `intel-ucode` 替换为 `amd-ucode` 以安装对应的微码
-12. 生成 fstab 文件，将现有的挂载配置持久化：
+11. 生成 fstab 文件，将现有的挂载配置持久化：
     ```bash
     genfstab -U /mnt >> /mnt/etc/fstab
     ```
     生成后使用 `cat /mnt/etc/fstab` 检查是否正确
-13. 切换根：
+12. 切换根：
     ```bash
     arch-chroot /mnt
     ```
     注意：使用 `arch-chroot` 而不是 `chroot`
-14. 设置时区：
+13. 设置时区：
     ```bash
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
     hwclock --systohc
     ```
     这里设置时区为上海，你可以根据自己的实际情况调整
-15. 设置区域（Locale）：  
+14. 设置区域（Locale）：  
     1. 编辑 `/etc/locale.gen`
     2. 取消注释 `en_US.UTF-8 UTF-8` 和 `zh_CN.UTF-8 UTF-8`
     3. 生成区域设置：
@@ -107,17 +116,17 @@ reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\TimeZoneInformation
        LANG=en_US.UTF-8
        ```
        由于 TTY 无法显示中文，所以全局语言设置为英文，中文环境将在桌面环境中设置。
-16. 编辑 `/etc/hostname` 写入主机名
-17. 使用 `passwd` 设置 root 密码
-18. 安装基础软件：
+15. 编辑 `/etc/hostname` 写入主机名
+16. 使用 `passwd` 设置 root 密码
+17. 安装基础软件：
     ```bash
     pacman -Syu networkmanager base-devel vim sbctl efibootmgr terminus-font
     ```
-19. 编辑 `/etc/mkinitcpio.conf` 使用以下 HOOKS：
+18. 编辑 `/etc/mkinitcpio.conf` 使用以下 HOOKS：
     ```
     HOOKS=(base systemd autodetect modconf kms keyboard sd-vconsole block sd-encrypt filesystems fsck)
     ```
-20. 查看磁盘分区永久名称：执行 `ls -l /dev/disk/by-uuid/` 找到连接到 `/dev/nvme1n1p5` 的 UUID。
+19. 查看磁盘分区永久名称：执行 `ls -l /dev/disk/by-uuid/` 找到连接到 `/dev/nvme1n1p5` 的 UUID。
 20. 配置内核参数 `/etc/kernel/cmdline`：
     ```
     fbcon=nodefer rw rd.luks.allow-discards cryptdevice=/dev/disk/by-uuid/YOUR_DEVICE_UUID:system bgrt_disable root=LABEL=system rootflags=subvol=@,rw splash vt.global_cursor_default=0
@@ -141,11 +150,11 @@ reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\TimeZoneInformation
     mkdir -P /efi/EFI/Linux
     mkinitcpio -P
     ```
-26. 添加 EFI 引导项：
+25. 添加 EFI 引导项：
     ```bash
     efibootmgr --disk /dev/nvme1n1 --part 4 --create  --label "Arch Linux" --loader "\EFI\Linux\arch-linux.efi"
     ```
-27. 退出 chroot 环境：
+26. 退出 chroot 环境：
     ```bash
     exit
     umount -R /mnt
@@ -493,6 +502,26 @@ pacman -S fish
 chsh $(which fish)
 ```
 
+## mDNS 服务
+> mDNS 是一种零配置网络服务发现协议，允许设备在局域网内自动发现其他设备。常用于 SMB 共享数据集、网络打印机、隔空投送等服务的发现。
+
+如果需要局域网内的设备发现，安装 `avahi` 和 `nss-mdns`：
+```bash
+pacman -S avahi nss-mdns
+systemctl enable avahi-daemon
+```
+
+并编辑 `/etc/nsswitch.conf`，在 `hosts` 行添加 `mdns_minimal [NOTFOUND=return]`（在 `resolve` 之前）。
+```patch
+- hosts: mymachines resolve [!UNAVAIL=return] files myhostname dns
++ hosts: mymachines mdns_minimal [NOTFOUND=return] resolve [!UNAVAIL=return] files myhostname dns
+```
+
+之后就可以使用 `.local` 后缀的域名访问局域网内开启了 mDNS 的设备了。
+```bash
+ping another-device.local
+```
+
 ## 参考资料
 - [LUKS2 YubiKey 全盘加密手稿 by 北雁云依](https://blog.yunyi.beiyan.us/posts/luksNote/)
 - [ArchWiki: Installation guide](https://wiki.archlinux.org/title/Installation_guide)
@@ -501,4 +530,5 @@ chsh $(which fish)
 - [\[SOLVED\] Numlock not activating during boot time (systemd-boot)](https://bbs.archlinux.org/viewtopic.php?id=283252)
 - [ArchWiki: Kernel mode setting / mkinitcpio](https://wiki.archlinux.org/title/kernel_mode_setting#mkinitcpio)
 - [ArchWiki: NVIDIA / Early loading](https://wiki.archlinux.org/title/NVIDIA#Early_loading)
+- [ArchWiki: Avahi](https://wiki.archlinux.org/title/Avahi)
 - [Using Fcitx 5 on Wayland](https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland)
