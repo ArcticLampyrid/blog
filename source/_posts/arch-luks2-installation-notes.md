@@ -1,7 +1,7 @@
 ---
 title: Arch Linux 安装笔记（LUKS2 + Secure Boot + TPM + PIN）
 date: 2024-03-23 18:12:00
-updated: 2024-12-20 04:20:00
+updated: 2025-01-28 16:01:00
 category: 技术
 toc: true
 tags:
@@ -199,6 +199,16 @@ sbctl enroll-keys -mcft
 ```bash
 sudo systemd-cryptenroll --wipe-slot tpm2 --tpm2-device auto --tpm2-pcrs 7 --tpm2-with-pin=yes /dev/nvme1n1p5
 ```
+
+## 配置磁盘自动 Scrub（可选）
+Scrub 是 Btrfs 文件系统的一种检查机制，用于检查文件系统的一致性。我们可以配置定时 Scrub 来保证文件系统的健康。
+
+系统默认提供了 `btrfs-scrub@.timer` 模板，可以用于定期检查 Btrfs 文件系统的一致性。我们可以使用此模板来配置自动 Scrub。
+```bash
+sudo systemctl enable $(systemd-escape --template=btrfs-scrub@.timer --path /)
+```
+
+注意：Scrub 对整个文件系统进行检查，而非单个子卷。故而我们只需要对挂载点 `/` 进行配置即可。
 
 ## 安装桌面环境
 ```bash
