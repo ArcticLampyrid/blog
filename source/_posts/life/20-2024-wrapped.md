@@ -1,7 +1,7 @@
 ---
 title: 2024 年度总结（附解谜红包）
 date: 2025-01-29 00:00:00
-updated: 2025-01-29 00:52:00
+updated: 2025-01-30 00:22:00
 category: 生活
 toc: true
 excerpt: 2024 年度总结，回顾了一年的开源生活、数码消费、旅行经历、赛博娱乐等方面的经历，详细总结了 2024 年度完成的各类事务，并流露了对未来的一些期望。<br>希望 2025 年能够更加充实多彩，也希望大家都能够在新的一年里有所收获！（附 2025 年解谜红包）
@@ -113,7 +113,7 @@ excerpt: 2024 年度总结，回顾了一年的开源生活、数码消费、旅
 - “可爱的” Linux 微信（新版已无此问题）在和我的其他插件抢占快捷键，参见 {% post_link block-hotkeys-for-wechat-uos %}。
 - 腾讯会议在 Wayland 下无法使用屏幕共享功能，可以用 xuwd1 佬的 [wemeet-wayland-screenshare](https://github.com/xuwd1/wemeet-wayland-screenshare) 解决。
 
-在将各种问题逐步解决或绕过后，Arch Linux 成为了我的主力开发系统，目前已经稳定运行了 10 个月左右。考虑到 Dockek 的广泛应用以及 Linux 环境下进行 Native 开发的优势，这次迁移还是非常值得的。
+在将各种问题逐步解决或绕过后，Arch Linux 成为了我的主力开发系统，目前已经稳定运行了 10 个月左右。考虑到 Docker 的广泛应用以及 Linux 环境下进行 Native 开发的优势，这次迁移还是非常值得的。
 
 ## 生活
 ### 旅行
@@ -186,3 +186,5 @@ Anyway，放照片。
 】春日游" style="width: 100%; height: 86px; margin: 0; border: none; " data-hint="caesar"></iframe>
 
 Have a good time!
+
+**更新：{% post_link solution-red-packet-2025 解谜方法已发布 %}**
