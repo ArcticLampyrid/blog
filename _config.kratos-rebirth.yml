@@ -178,24 +178,42 @@ comments:
     template:
       _shared: |
         <script>
-          window.livereOptions = {
-              refer: "https://alampy.com$PATH".replace(/\/index\.html$/, "/").replace(/^[a-zA-Z]+?\:\/\//, ""),
-              site: "alampy.com$PATH".replace(/\/index\.html$/, "/"),
-              eagerLoading: true
-          };
-          window.loadComments = () => {
-              if (typeof LivereTower === 'undefined') {
-                  var d = document, s = d.createElement('script');
-                  s.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-                  (d.head || d.body).appendChild(s);
-              } else {
-                  window.LivereTower.start();
+          window.loadComments = async () => {
+            if (typeof Artalk === "undefined") {
+              setTimeout(loadComments, 100);
+            } else {
+              const container = document.getElementById('artalk-container');
+              if (!container) {
+                return;
               }
+              const isDark = () => {
+                switch(localStorage.getItem('user-color-scheme')) {
+                  case 'dark':
+                    return true;
+                  case 'light':
+                    return false;
+                  default:
+                    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+                }
+              };
+              const path = container.getAttribute("data-path");
+              const artalk = Artalk.init({
+                el: '#artalk-container',
+                pageKey: path,
+                server: 'https://comments.alampy.com',
+                site: '萤火之光',
+                darkMode: isDark(),
+              });
+              updateTheme();
+              window.addEventListener('pjax:success', () => {
+                artalk.destroy();
+              }, { once: true });
+            }
           };
         </script>
       index: ""
-      post: <div id="lv-container" class="kr-comments lazy-load" data-id="city" data-uid="MTAyMC81NTk3MC8zMjQzMw=="></div>
-      page: <div id="lv-container" class="kr-comments lazy-load" data-id="city" data-uid="MTAyMC81NTk3MC8zMjQzMw=="></div>
+      post: <div id="artalk-container" class="kr-comments lazy-load" data-path="$PATH"></div>
+      page: <div id="artalk-container" class="kr-comments lazy-load" data-path="$PATH"></div>
   count:
     enable_at:
       []
@@ -221,6 +239,8 @@ visit_count:
 additional_injections:
   head: |
     <link rel="stylesheet" id="kratos-css" href="/css/shiki.css" media="all">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/artalk/2.9.1/Artalk.css" integrity="sha512-lzv5ZeeK/LLJAk/8rgV7Xn/iEOMpsrlRJp1N649V5kt5psU1glxlqKzqAms684uW/m6IePP25R6AuewvOuUvQQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/artalk/2.9.1/Artalk.js" integrity="sha512-O0qr7QLHz7WKZDQ+ifyT6hsjPP3A8aJaPkrWRaOF80C4M7bM1xirQZmM82bQgcLWlidb1/PeD65PKYAtIM3eMw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "999960a09fd44d63bc39abfe9a0e55a5"}'></script>
   footer: ""
   after_footer: ""
