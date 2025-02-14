@@ -1,0 +1,53 @@
+name: Deploy site to AWS Amplify
+on: push
+jobs:
+  deploy-to-aws-amplify:
+    runs-on: ubuntu-latest
+    # Required to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      TZ: Asia/Shanghai
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN }}
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: true
+      - name: Build
+        run: ./ci/build.sh
+      - name: Deploy
+        run: |
+          cd public
+          zip -q -r ./archive.zip * && echo "Site zipped" || echo "Failed to zip site"
+          cd ..
+          echo "::group::Create deployment"
+          RESPONSE=$(aws amplify create-deployment --app-id ${{ secrets.AMPLIFY_APP_ID }} --branch-name ${{ secrets.AMPLIFY_BRANCH }})
+          JOB_ID=$(echo $RESPONSE | jq -r '.jobId')
+          ZIP_URL=$(echo $RESPONSE | jq -r '.zipUploadUrl')
+          echo "Job ID: $JOB_ID"
+          echo "::endgroup::"
+          echo "::group::Upload site"
+          curl -X PUT -T "./public/archive.zip" -H "Content-Type: application/zip" "$ZIP_URL"
+          echo "::endgroup::"
+          echo "::group::Deploy site"
+          aws amplify start-deployment --app-id ${{ secrets.AMPLIFY_APP_ID }} --branch-name ${{ secrets.AMPLIFY_BRANCH }} --job-id $JOB_ID > /dev/null && echo "Site deployed" || echo "Failed to deploy site"
+          echo "::endgroup::"
+      - name: WebSub
+        run: |
+          sleep 60
+          curl --silent --output /dev/null --show-error https://alampy.com/atom.xml
+          curl --silent --output /dev/null --show-error -i https://pubsubhubbub.appspot.com/ -F "hub.mode=publish" -F "hub.url=https://alampy.com/atom.xml"

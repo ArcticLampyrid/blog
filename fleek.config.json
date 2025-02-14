@@ -1,9 +1,0 @@
-{
-    "sites": [
-        {
-            "slug": "alampy",
-            "distDir": "public",
-            "buildCommand": "./ci/build.sh"
-        }
-    ]
-}
