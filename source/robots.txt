@@ -1,0 +1,5 @@
+# Allow All
+User-agent: *
+Disallow:
+
+Sitemap: https://alampy.com/sitemap.xml

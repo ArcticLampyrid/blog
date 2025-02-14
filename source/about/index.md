@@ -113,3 +113,5 @@ d9bPhEEBAPx8DEZxu1CmSfvdaLkFt9/IfMXcwsfuLgFkuHsHXay7AQDIhczgFHO5
 - 2024-02-19：加入[开往](https://www.travellings.cn/)
 - 2024-03-27：加入[萌备](https://icp.gov.moe/?keyword=20240550)
 - 2024-07-27：使用 [Shiki](https://shiki.style/) 语法高亮库
+- 2025-01-30：切换评论系统为自建的 [Artalk](https://artalk.js.org/)
+- 2025-02-15：切换博客网页托管商为 [AWS Amplify](https://aws.amazon.com/amplify/)，并添加 robots.txt 文件
