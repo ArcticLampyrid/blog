@@ -71,7 +71,7 @@ footer:
       homepage: ""
     additional: # 托管信息等
       - - 由 <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a> 强力驱动
-        - 在 <a href="https://fleek.co/" target="_blank">Fleek</a> 暖心托管
+        - 在 <a href="https://aws.amazon.com/amplify/" target="_blank">Amplify</a> 暖心托管
         - <a href="https://icp.gov.moe/?keyword=20240550" target="_blank">萌ICP备20240550号</a>
 
 inactive_notice:
