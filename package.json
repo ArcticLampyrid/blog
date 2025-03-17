@@ -8,7 +8,7 @@
   "dependencies": {
     "hexo": "^7.3.0",
     "hexo-auto-excerpt-rebirth": "^1.1.0",
-    "hexo-filter-katex": "^1.0.1",
+    "hexo-filter-katex": "^1.1.0",
     "hexo-generator-archive": "^2.0.0",
     "hexo-generator-category": "^2.0.0",
     "hexo-generator-feed": "^3.0.0",
@@ -16,9 +16,9 @@
     "hexo-generator-seo-friendly-sitemap": "^0.2.1",
     "hexo-generator-tag": "^2.0.0",
     "hexo-html-minifier": "^1.0.0",
-    "hexo-shiki-highlighter": "^0.1.0",
+    "hexo-shiki-highlighter": "^0.2.2",
     "hexo-renderer-ejs": "^2.0.0",
-    "hexo-renderer-marked": "^6.3.0",
+    "hexo-renderer-marked": "^7.0.1",
     "hexo-renderer-stylus": "^3.0.1",
     "hexo-server": "^3.0.0"
   }
