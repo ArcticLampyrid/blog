@@ -2,7 +2,7 @@ friends:
   - title: "NKID00"
     description: "[Non-CN] 是偶尔也玩硬件的全栈软件大佬耶～"
     image: "/images/friends/nkid00.name.webp"
-    link: "https://nkid00.name/"
+    link: "https://nk0.me/"
   - title: "I’m Luochancy"
     description: "这是个猫猫的博客喵～"
     image: "https://cravatar.cn/avatar/1efd90b2b56dba67c86323e789b065c6?s=400"
@@ -16,6 +16,10 @@ friends:
     image: "https://cravatar.cn/avatar/2844e6d0e62fac2c269cdb2e08eaef90?s=400"
     link: "https://blog.insmtr.cn/"
   - title: "Polari_S_tation"
-    description: "[IPv6] 一个喜欢研究奇怪东西的辣鸡佬😋"
+    description: "一个喜欢研究奇怪东西的辣鸡佬😋"
     image: "/images/friends/polaristation.fun.webp"
     link: "https://blog.polaristation.fun/"
+  - title: Lentinel的小站
+    description: 有顶天的小桃园
+    image: https://lentinel.icu/upload/icon.png
+    link:  https://lentinel.icu
