@@ -1,7 +1,7 @@
 ---
 title: Arch Linux 安装笔记（LUKS2 + Secure Boot + TPM + PIN）
 date: 2024-03-23 18:12:00
-updated: 2025-01-28 16:01:00
+updated: 2025-07-27 19:56:00
 category: 技术
 toc: true
 tags:
@@ -351,6 +351,19 @@ Numlock=on
 ### KDE 环境
 配置 KDE 的 NumLock 设置为开启。
 
+## 配置 SDDM 使用 Wayland 执行
+SDDM 提供会话管理和登录界面（注意与锁屏界面区分），默认情况下会使用 X11。为了使用 Wayland，我们需要修改 SDDM 的配置。
+
+对于 KDE 用户，可以向 `/etc/sddm.conf.d/10-wayland.conf` 写入以下内容：
+```ini
+[General]
+DisplayServer=wayland
+GreeterEnvironment=QT_WAYLAND_SHELL_INTEGRATION=layer-shell
+
+[Wayland]
+CompositorCommand=kwin_wayland --drm --no-lockscreen --no-global-shortcuts --locale1
+```
+
 ## 配置 Plymouth
 Plymouth 是一个启动画面框架，可以用来美化启动过程。
 
@@ -387,11 +400,10 @@ makepkg -si
 pacman -S nvidia-open
 ```
 
-修改 `/etc/mkinitcpio.conf`，在 HOOKS 中删除 `kms`。
+一些文章（包括 Arch wiki）曾建议在 `/etc/mkinitcpio.conf` 中删除 `kms` hook，以防止 nouveau 被错误加载。实际上 `nvidia-utils` 包已经自带了屏蔽规则来防止 nouveau 被加载，因此不需要手动删除 `kms` hook。对于纯 Nvidia 用户，`kms` hook 几乎没有任何作用。然而对于双显卡用户（如 Intel + Nvidia），`kms` 仍然应该保留，以保证 Intel 显卡在早期阶段被正确加载，这有助于 Plymouth 和其他早期图形应用的正常运行。
 
-{% collapse "另一配置方法：启用 early KMS（对于双显卡用户，此种配置易导致 bug，故博主不使用）" %}
-
-为了保证 plymouth 的显示不出现缩放失败、字体过小等问题，需要使用 early KMS。因此，在 `/etc/mkinitcpio.conf` 的 HOOKS 中保留 `kms` ，并在 MODULES 中添加 `nvidia nvidia_modeset nvidia_uvm nvidia_drm`。（
+{% collapse "若需要启用 early KMS（对于双显卡用户，此种配置易导致 bug，故博主不使用）" %}
+若需要使用 early KMS（在内核早期阶段，加载 Nvidia 的驱动并进行 modeset），修改 `/etc/mkinitcpio.conf`，在 MODULES 中添加 `nvidia nvidia_modeset nvidia_uvm nvidia_drm`。
 
 配置 pacman hook，创建如下的 `/etc/pacman.d/hooks/nvidia.hook` 文件，以在每次安装新版本驱动后自动重建 initramfs：
 ```ini
@@ -421,6 +433,80 @@ nvidia_drm.fbdev=1 nvidia_drm.modeset=1
 ```bash
 mkinitcpio -P
 ```
+
+## 视频编解码硬件加速
+注：若不正确配置硬件加速，可能会导致 HEVC (H.265) 视频无法播放，YouTube、BiliBili 等网站的视频播放卡顿。
+
+### VA-API 支持
+VA-API 是一个专用于视频处理硬件加速的 API。
+
+笔者的电脑具有 Intel 核显，安装 `intel-media-driver` 获得 VA-API 支持：
+```bash
+# 对于 Broadwell (2014) 之前的 Intel 处理器，请改用 libva-intel-driver
+pacman -S intel-media-driver
+```
+
+AMD 用户可以通过 `mesa` 获得 VA-API 支持，而对于纯 Nvidia **专有驱动**用户，则可以使用 `libva-nvidia-driver` 翻译层翻译到 NVDEC。
+
+在安装完成后，可以通过 `vainfo`（由 `libva-utils` 包提供）命令检查 VA-API 是否正常工作。
+
+### Vulkan 支持
+对于 Intel GPU，需要安装 `vulkan-intel`：
+```bash
+pacman -S vulkan-intel
+```
+
+对于 AMD GPU 用户，可以考虑安装 `vulkan-radeon`（或 amdgpu-pro 等闭源实现）。对于 Nvidia GPU，专有驱动中已经包含了 Vulkan 支持，无需额外安装。
+
+### Intel VPL 支持
+安装 `libvpl` 和 `vpl-gpu-rt` 以获得 Intel VPL 的加速支持：
+```bash
+# 对于 Tiger Lake (2020) 之前的 Intel 处理器，请改用 intel-media-sdk 替换 vpl-gpu-rt
+pacman -S libvpl vpl-gpu-rt
+```
+
+### 应用配置
+#### VLC Player
+对于 VLC PLayer，建议安装 ffmpeg plugin 以正确获得硬件加速支持：
+```bash
+pacman -S vlc-plugin-ffmpeg
+```
+
+#### GStreamer
+安装 `gst-plugin-va` 以获得 VA-API 支持。
+```bash
+pacman -S gst-plugin-va
+```
+
+#### Chromium-based App
+对于 Chromium-based 应用（如 Chrome、Edge、Electron 等），笔者测试**需要打开 Vulkan 支持**才能正确使用视频解码硬件加速（注：有在 OpenGL 环境下使用 VA-API 的记录，但笔者未成功复现）：
+```bash
+# eg. Microsoft Edge Stable
+microsoft-edge-stable --enable-features=Vulkan,DefaultANGLEVulkan,VulkanFromANGLE,VaapiIgnoreDriverChecks,VaapiVideoDecoder,VaapiVideoEncoder
+```
+
+然而，在笔者电脑上，Vulkan 模式默认将使用 Nvidia 显卡，这导致了以下严重问题（_F\*\*k Nvidia_）：
+- 如果同时开启 Wayland 模式，整个界面渲染异常
+- 若启用 `VaapiVideoDecoder`，所有视频播放失败，Edge 浏览器在 GPU 进程崩溃多次后回退到纯软件渲染模式
+
+笔者目前的解决方法是设置 `VK_ICD_FILENAMES` 以强制使用 Intel GPU：
+```bash
+# 使用以下命令查看当前可用的 Vulkan ICD 配置
+# ls -al /usr/share/vulkan/icd.d
+export VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/intel_icd.x86_64.json
+```
+
+考虑到笔者使用浏览器时不涉及重度图形渲染，因此优先使用 Intel GPU 是合理的。
+
+一切配置完成后，可以使用以下页面测试 HEVC 视频是否可以播放：<https://tests.caniuse.com/?feat=hevc>
+
+### 观察视频加速效果
+可以使用 `nvtop` 观察硬件编解码占用率。注意，刚启动 `nvtop` 时可能不会显示 ENC/DEC 这一栏，请稍等一会。
+
+{% alertpanel "info" "备注" %}
+尽管 `nvtop` 名字中有 `nv`，但这主要是历史原因，实际上其早就支持监控 Intel、AMD 等各种 GPU 了，效果如下：
+{% asset_img nvtop-enc-dec-bar.webp "NVTop Enc/Dec Bar" %}
+{% endalertpanel %}
 
 ## 安装音频驱动
 ```bash
@@ -541,4 +627,7 @@ ping another-device.local
 - [ArchWiki: Kernel mode setting / mkinitcpio](https://wiki.archlinux.org/title/kernel_mode_setting#mkinitcpio)
 - [ArchWiki: NVIDIA / Early loading](https://wiki.archlinux.org/title/NVIDIA#Early_loading)
 - [ArchWiki: Avahi](https://wiki.archlinux.org/title/Avahi)
+- [ArchWiki: SDDM / Wayland](https://wiki.archlinux.org/title/SDDM#Wayland)
+- [ArchWiki: Vulkan](https://wiki.archlinux.org/title/Vulkan)
+- [ArchWiki: Hardware video acceleration](https://wiki.archlinux.org/title/Hardware_video_acceleration)
 - [Using Fcitx 5 on Wayland](https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland)
