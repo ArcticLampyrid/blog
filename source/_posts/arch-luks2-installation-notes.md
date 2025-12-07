@@ -1,7 +1,7 @@
 ---
 title: Arch Linux 安装笔记（LUKS2 + Secure Boot + TPM + PIN）
 date: 2024-03-23 18:12:00
-updated: 2025-07-27 19:56:00
+updated: 2025-12-07 16:23:00
 category: 技术
 toc: true
 tags:
@@ -479,7 +479,15 @@ pacman -S gst-plugin-va
 ```
 
 #### Chromium-based App
-对于 Chromium-based 应用（如 Chrome、Edge、Electron 等），笔者测试**需要打开 Vulkan 支持**才能正确使用视频解码硬件加速（注：有在 OpenGL 环境下使用 VA-API 的记录，但笔者未成功复现）：
+##### 保持 OpenGL 模式并开启 VA-API 硬件加速
+20251207 测试，添加以下启动参数可以在 OpenGL 模式下启用 VA-API 硬件加速：
+```bash
+# eg. Microsoft Edge Stable
+microsoft-edge-stable --enable-features=AcceleratedVideoDecodeLinuxZeroCopyGL,AcceleratedVideoDecodeLinuxGL
+```
+
+##### 使用 Vulkan 模式并开启 VA-API 硬件加速
+对于 Chromium-based 应用（如 Chrome、Edge、Electron 等），笔者测试**需要打开 Vulkan 支持**才能正确使用视频解码硬件加速（注：有在 OpenGL 环境下使用 VA-API 的记录，但笔者在 20250727 未成功复现）：
 ```bash
 # eg. Microsoft Edge Stable
 microsoft-edge-stable --enable-features=Vulkan,DefaultANGLEVulkan,VulkanFromANGLE,VaapiIgnoreDriverChecks,VaapiVideoDecoder,VaapiVideoEncoder
