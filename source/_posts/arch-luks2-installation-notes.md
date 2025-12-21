@@ -1,7 +1,7 @@
 ---
 title: Arch Linux 安装笔记（LUKS2 + Secure Boot + TPM + PIN）
 date: 2024-03-23 18:12:00
-updated: 2025-12-07 16:23:00
+updated: 2025-12-21 13:15:00
 category: 技术
 toc: true
 tags:
@@ -209,6 +209,20 @@ sudo systemctl enable $(systemd-escape --template=btrfs-scrub@.timer --path /)
 ```
 
 注意：Scrub 对整个文件系统进行检查，而非单个子卷。故而我们只需要对挂载点 `/` 进行配置即可。
+
+## 配置 Pacman 包缓存自动清理（可选）
+为了避免包缓存占用过多空间，我们可以配置定期清理包缓存。
+
+```bash
+sudo systemctl enable paccache.timer
+```
+
+默认情况下，`paccache.timer` 会每周运行一次，清理超过 3 个版本的包缓存。
+
+如果需要修改保留数量，可以编辑 `/etc/conf.d/pacman-contrib` 文件，例如：
+```bash
+PACCACHE_ARGS="--keep 2"
+```
 
 ## 安装桌面环境
 ```bash
@@ -484,6 +498,11 @@ pacman -S gst-plugin-va
 ```bash
 # eg. Microsoft Edge Stable
 microsoft-edge-stable --enable-features=AcceleratedVideoDecodeLinuxZeroCopyGL,AcceleratedVideoDecodeLinuxGL
+```
+
+如果无效，可尝试再添加以下参数（非 Intel 显卡用户应当需要）：
+```bash
+--enable-features=VaapiIgnoreDriverChecks,VaapiOnNvidiaGPUs
 ```
 
 ##### 使用 Vulkan 模式并开启 VA-API 硬件加速
