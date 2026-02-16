@@ -121,7 +121,7 @@ AI 应用侧方面的工作，总的来说并不算得上十分精巧（相比�
 ## 2026 解谜红包
 既然前几年都是把红包藏在图片里了，那今年就发个视频吧～
 
-支付宝拼手气口令红包，有效时间：2025 年 1 月 28 日 23:00 至 2025 年 1 月 29 日 23:00，188 CNY / 8 个。  
+支付宝拼手气口令红包，有效时间：2026 年 2 月 16 日 23:00 至 2026 年 2 月 17 日 23:00，188 CNY / 8 个。  
 
 <video controls style="max-width: 100%; height: auto; width: 400px; display: block; margin: 0 auto;" data-hint="jigsaw puzzle">
   <source src="{% asset_path RedPacket2026.mp4 %}" type="video/mp4">
