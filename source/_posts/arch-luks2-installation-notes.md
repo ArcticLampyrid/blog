@@ -1,7 +1,7 @@
 ---
 title: Arch Linux 安装笔记（LUKS2 + Secure Boot + TPM + PIN）
 date: 2024-03-23 18:12:00
-updated: 2025-12-21 13:15:00
+updated: 2026-07-11 16:03:00
 category: 技术
 toc: true
 tags:
@@ -129,12 +129,19 @@ reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\TimeZoneInformation
 19. 查看磁盘分区永久名称：执行 `ls -l /dev/disk/by-uuid/` 找到连接到 `/dev/nvme1n1p5` 的 UUID。
 20. 配置内核参数 `/etc/kernel/cmdline`：
     ```
-    fbcon=nodefer rw rd.luks.allow-discards cryptdevice=/dev/disk/by-uuid/YOUR_DEVICE_UUID:system bgrt_disable root=LABEL=system rootflags=subvol=@,rw splash vt.global_cursor_default=0
+    fbcon=nodefer rw bgrt_disable root=LABEL=system rootflags=x-systemd.device-timeout=180,subvol=@,rw splash vt.global_cursor_default=0
     ```
+    注意对于 sd-encrypt 用户而言，不建议使用 `cryptdevice=xxx` 指令。相反应该配置 `/etc/crypttab.initramfs`。
 21. 配置启动时解密 `/etc/crypttab.initramfs`：
     ```
-    system /dev/disk/by-uuid/YOUR_DEVICE_UUID none timeout=180
+    system /dev/disk/by-uuid/YOUR_DEVICE_UUID none discard,no-read-workqueue,no-write-workqueue,timeout=180
     ```
+    | 参数 | 说明 |
+    | --- | --- |
+    | `discard` | 启动固态硬盘 TRIM 指令支持。这能够提高性能，但可能暴露哪些区块未被使用等信息。您需要自行评估这种暴露是否可接受。 |
+    | `no-read-workqueue` | 关闭读取队列。队列对于机械硬盘是合理的，但对于 SSD 而言，绕过队列并同步写入数据可以使吞吐量翻倍。 |
+    | `no-write-workqueue` | 关闭写入队列。队列对于机械硬盘是合理的，但对于 SSD 而言，绕过队列并同步写入数据可以使吞吐量翻倍。 |
+    | `timeout` | 指定等待输入密码多少时间，此外还有在 `/etc/kernel/cmdline` 中的 `x-systemd.device-timeout` 指定 systemd 等待 rootfs 设备出现的超时时间。这两个数值最好匹配。 |
 22. 设置 `/etc/vconsole.conf`：
     ```
     KEYMAP=us
@@ -209,6 +216,32 @@ sudo systemctl enable $(systemd-escape --template=btrfs-scrub@.timer --path /)
 ```
 
 注意：Scrub 对整个文件系统进行检查，而非单个子卷。故而我们只需要对挂载点 `/` 进行配置即可。
+
+## 配置 LUKS 解锁超时后自动关机
+默认情况下，如果 LUKS 解锁超时（例如：一直没有输入密码），会导致根分区挂载失败，系统会进入 emergency mode。
+<https://github.com/basecamp/omarchy/discussions/6147> 提供了一种方式，将 emergency 目标软链接到 poweroff 实现自动关机。
+
+具体而言，首先创建文件 `/usr/lib/initcpio/install/timeout-shutdown` 并添加执行权限：
+```bash
+#!/bin/bash
+
+build() {
+    add_symlink /usr/lib/systemd/system/emergency.target poweroff.target
+    add_file /usr/lib/systemd/system/poweroff.target
+    add_file /usr/lib/systemd/system/systemd-poweroff.service
+}
+
+help() {
+    cat <<HELPEOF
+Redirects systemd emergency.target to poweroff.target inside the initramfs.
+Prevents unauthenticated freezing loops on systems with locked root accounts.
+HELPEOF
+}
+```
+
+然后修改 `/etc/mkinitcpio.conf`，在 `HOOKS` 的 `sd-encrypt` 后面添加 `timeout-shutdown`。
+
+最后重新 `mkinitcpio -P`
 
 ## 配置 Pacman 包缓存自动清理（可选）
 为了避免包缓存占用过多空间，我们可以配置定期清理包缓存。
