@@ -216,8 +216,8 @@ visit_count:
 additional_injections:
   head: |
     <link rel="stylesheet" id="kratos-css" href="/css/shiki.css" media="all">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/artalk/2.9.1/Artalk.css" integrity="sha512-lzv5ZeeK/LLJAk/8rgV7Xn/iEOMpsrlRJp1N649V5kt5psU1glxlqKzqAms684uW/m6IePP25R6AuewvOuUvQQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/artalk/2.9.1/Artalk.js" integrity="sha512-O0qr7QLHz7WKZDQ+ifyT6hsjPP3A8aJaPkrWRaOF80C4M7bM1xirQZmM82bQgcLWlidb1/PeD65PKYAtIM3eMw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/artalk/2.10.1/Artalk.css" integrity="sha512-U/EiSVlEP8gv9dCNqG4Qg9uRLBFo87+7wCDi7IrJ0jCLcZjiDt+oRpFUWlqj1Yorfe8znXdqlN4Tp0sGyYlBfg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/artalk/2.10.1/Artalk.js" integrity="sha512-enPJ+b03qJpg09Zt2SatKG4W5QrEhLreJw8aDfFfKTxRcDuLpAlGkQY2atFrBMsxWKgIYbhNpJU/goQ3bq2QAA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "999960a09fd44d63bc39abfe9a0e55a5"}'></script>
   footer: ""
   after_footer: ""
