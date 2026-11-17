@@ -1,7 +1,7 @@
 ---
 title: 在 AWS Lightsail 上抢救因 Debian 6.1.192-1 内核 Bug 失联的实例
 date: 2026-11-17 23:31:00
-updated: 2026-11-17 23:31:00
+updated: 2026-11-17 23:52:00
 category: 技术
 tags:
 - Linux
@@ -104,7 +104,7 @@ sudo systemctl reboot
 ### Lightsail 的两个平台限制
 如果去搜 AWS 文档，通常能看到两种和快照相关的功能，但实际用起来都有坑：
 1. **导出到 EC2（Export to Amazon EC2）是单向的**：Lightsail 支持把实例快照导出为 EC2 的 AMI 和 EBS 卷（[官方文档](https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-exporting-snapshots-to-amazon-ec2)）。导出后确实可以在 EC2 里把 EBS 卷挂到别的机器上修好，但 **AWS 不支持把 EC2 的 AMI 或卷导回 Lightsail**。一旦走这条路，你就只能放弃 Lightsail 便宜的套餐包，留在 EC2 上按量付费运行了。
-2. **系统盘块存储快照只能变数据盘，不能变回系统盘**：AWS CLI 提供了一个网页控制台上没有的功能，可以把某个实例的**系统盘（Root Volume）**单独打成块存储快照（Disk Snapshot），再从这个快照创建一块附加数据盘（Block Storage Disk）挂到其他 Lightsail 实例上（[官方文档](https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-create-an-instance-root-volume-snapshot.html)）。但注意， Lightsail 里 `Disk Snapshot` 只能拿来建附加数据盘，**既不能直接用来创建新实例，也不能挂回原实例替掉损坏的系统盘**。
+2. **系统盘块存储快照只能变数据盘，不能变回系统盘**：AWS CLI 提供了一个网页控制台上没有的功能，可以把某个实例的**系统盘（Root Volume）** 单独打成块存储快照（Disk Snapshot），再从这个快照创建一块附加数据盘（Block Storage Disk）挂到其他 Lightsail 实例上（[官方文档](https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-create-an-instance-root-volume-snapshot.html)）。但注意， Lightsail 里 `Disk Snapshot` 只能拿来建附加数据盘，**既不能直接用来创建新实例，也不能挂回原实例替掉损坏的系统盘**。
 
 ### 曲线救国：CLI 提取系统盘 + 新实例 `chroot` 修复 + 覆写克隆
 既然没办法把修好的附加数据盘直接变回系统盘，但我们又想留在 Lightsail，唯一的办法就是“借壳上市”：把坏实例的系统盘通过 CLI 提取成附加数据盘，挂载到一台同规格的新 Lightsail 实例上修好，然后**直接把修好的附加盘数据覆写回新实例自己的系统盘**。
@@ -117,7 +117,7 @@ sudo systemctl reboot
 5. 切换静态 IP 到新实例上面
 
 ## 尾声
-总的来说，只要能够撑到 `sshd` 启动，**方案一（利用“启动存活窗口”热切 GRUB）**绝对是最省时省力的解法，一两分钟就能无损救回；而万一真的遇到彻底无法引导的死局，就只能利用 `aws lightsail create-disk-snapshot` 把系统盘抽出来挂到新实例上修复、运行了。
+总的来说，只要能够撑到 `sshd` 启动，**方案一（利用“启动存活窗口”热切 GRUB）** 绝对是最省时省力的解法，一两分钟就能无损救回；而万一真的遇到彻底无法引导的死局，就只能利用 `aws lightsail create-disk-snapshot` 把系统盘抽出来挂到新实例上修复、运行了。
 
 ## 致谢
 本次修复和本文编写过程广泛采用了 AI，主要使用了 Gemini 4 Argon 和 GPT 6.1 Sol 模型，特此感谢。
